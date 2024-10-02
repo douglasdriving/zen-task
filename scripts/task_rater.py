@@ -2,6 +2,7 @@ from .task import Task
 
 
 class TaskRater:
+    """rates a task based on user input"""
 
     task: Task
 
