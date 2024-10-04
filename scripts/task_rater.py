@@ -27,12 +27,16 @@ class TaskRater:
         self.task.value = self._get_validated_input(
             "Please rate the value you would get from completing this task from 1-5.",
             "Value: ",
+            1,
+            5,
         )
 
     def _ask_user_for_excitement(self):
         self.task.excitement = self._get_validated_input(
             "Please rate the excitement you would get from completing this task from 1-5.",
             "Excitement: ",
+            1,
+            5,
         )
 
     def _ask_user_for_estimated_time_in_minutes(self):
@@ -47,6 +51,8 @@ class TaskRater:
         self.task.cognitive_load = self._get_validated_input(
             "Please rate the cognitive load you would experience from completing this task from 1-5.",
             "Cognitive load: ",
+            1,
+            5,
         )
 
     def _get_validated_input(
@@ -60,6 +66,6 @@ class TaskRater:
                 if min_value <= value <= max_value:
                     return value
                 else:
-                    print("Value must be betwee", min_value, "and", max_value)
+                    print("Value must be between", min_value, "and", max_value)
             except ValueError:
                 print("Value must be an integer")
