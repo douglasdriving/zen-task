@@ -1,39 +1,33 @@
-from .task_creator import TaskCreator
-from .task_rater import TaskRater
-from .task import Task
-from .task_db_adder import TaskDbAdder
-from datetime import datetime
+import tkinter as tk
+from .frames.main_menu import MainMenu
+from .frames.task_creation_page import TaskCreationPage
+from .frames.zen_mode_page import ZenModePage
+
+# from zen_mode_page import ZenModePage
 
 
 class App:
 
     def __init__(self):
-        pass
+        self.window = tk.Tk()
+        self.window.title("Task App")
+        self.container = tk.Frame(self.window)
+        self.container.pack(fill="both", expand=True)
+
+        self.frames = {}
+        for F in (MainMenu, TaskCreationPage, ZenModePage):
+            page_name = F.__name__
+            frame = F(parent=self.container, controller=self)
+            self.frames[page_name] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame("MainMenu")
+
+    def show_frame(self, page_name):
+        if page_name not in self.frames:
+            raise ValueError(f"Invalid page name: {page_name}")
+        frame = self.frames[page_name]
+        frame.tkraise()
 
     def run(self):
-
-        print("App starting.")
-
-        # task_creator = TaskCreator()
-        # task = task_creator.create_task()
-
-        exampleTask = Task(
-            "example task",
-            "all the example criteria fulfilled",
-            "1. example step 2. example step 3. example step",
-            "example project",
-            datetime(2024, 10, 6),
-        )
-
-        # task_rater = TaskRater(task)
-        # rated_task = task_rater.ask_user_for_ratings()
-
-        exampleTask.value = 2
-        exampleTask.excitement = 3
-        exampleTask.estimated_time_in_minutes = 25
-        exampleTask.cognitive_load = 2
-
-        task_db_adder = TaskDbAdder()
-        task_db_adder.add_task(exampleTask)
-
-        print("App closed.")
+        self.window.mainloop()
