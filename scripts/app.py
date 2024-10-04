@@ -28,6 +28,8 @@ class App:
             raise ValueError(f"Invalid page name: {page_name}")
         frame = self.frames[page_name]
         frame.tkraise()
+        if hasattr(frame, "on_show"):
+            frame.on_show()
 
     def run(self):
         self.window.mainloop()
