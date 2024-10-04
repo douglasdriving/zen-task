@@ -16,8 +16,8 @@ class TaskCreationPage(tk.Frame):
         self._add_return_button()
         tk.Label(self, text="Task Creation").pack(padx=10, pady=10)
 
-        self.text_fields: list[tk.Entry] = {}
-        self.selection_fields: list[SelectionRow] = {}
+        self.text_fields: dict[str, tk.Entry] = {}
+        self.selection_fields: dict[str, SelectionRow] = {}
 
         self._add_labeled_text_field("description", "Description")
         self._add_labeled_text_field("dod", "Definition of done")
@@ -41,6 +41,9 @@ class TaskCreationPage(tk.Frame):
             [1, 2, 3, 4, 5],
         )
         tk.Button(self, text="Add", command=self._add_task).pack(padx=10, pady=10)
+
+        self.bottom_message = tk.Label(self, text="")
+        self.bottom_message.pack(padx=10, pady=10)
 
     def _add_deadline_field(self):
         tk.Label(self, text="Deadline").pack(padx=10)
@@ -109,7 +112,9 @@ class TaskCreationPage(tk.Frame):
         )
 
         self.task_db_adder.add_task(task)
+        self.bottom_message.config(text="Added task: " + task.description)
         self._clean_values()
+        self.text_fields["description"].focus_set()
 
     def _clean_values(self):
         for entry in self.text_fields.values():
@@ -118,4 +123,3 @@ class TaskCreationPage(tk.Frame):
         self.time_estimate_field.delete(0, tk.END)
         for selection in self.selection_fields.values():
             selection.value_var.set(-1)
-        messagebox.showinfo("Task added", "Task added successfully")
