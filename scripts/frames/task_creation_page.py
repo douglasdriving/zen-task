@@ -1,7 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox  # Import messagebox
 import tkcalendar as tkc
-from .selection_row import SelectionRow
+from .form_elements.selection_row import SelectionRow
 from ..task import Task
 from datetime import datetime
 from ..task_db_adder import TaskDbAdder
@@ -13,12 +12,22 @@ class TaskCreationPage(tk.Frame):
         self.task_db_adder = TaskDbAdder()
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self._add_return_button()
-        tk.Label(self, text="Task Creation").pack(padx=10, pady=10)
-
         self.text_fields: dict[str, tk.Entry] = {}
         self.selection_fields: dict[str, SelectionRow] = {}
+        self._add_page_content()
 
+    def _add_page_content(self):
+        self._add_return_button()
+        tk.Label(self, text="Task Creation").pack(padx=10, pady=10)
+        self._add_input_fields()
+        tk.Button(self, text="Add", command=self._add_task).pack(padx=10, pady=10)
+        self._add_bottom_message_label()
+
+    def _add_bottom_message_label(self):
+        self.bottom_message = tk.Label(self, text="")
+        self.bottom_message.pack(padx=10, pady=10)
+
+    def _add_input_fields(self):
         self._add_labeled_text_field("description", "Description")
         self._add_labeled_text_field("dod", "Definition of done")
         self._add_labeled_text_field("steps", "Detailed steps")
@@ -40,10 +49,6 @@ class TaskCreationPage(tk.Frame):
             "How much effort do you think this task will require?",
             [1, 2, 3, 4, 5],
         )
-        tk.Button(self, text="Add", command=self._add_task).pack(padx=10, pady=10)
-
-        self.bottom_message = tk.Label(self, text="")
-        self.bottom_message.pack(padx=10, pady=10)
 
     def _add_deadline_field(self):
         tk.Label(self, text="Deadline").pack(padx=10)
