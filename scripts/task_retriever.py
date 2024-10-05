@@ -8,12 +8,12 @@ class TaskRetriever:
         pass
 
     def get_next_task(self):
-        tasks = self._get_all_tasks()
+        tasks = self._get_tasks_that_are_not_done()
         next_task = self._pick_best_task(tasks)
         return next_task
 
-    def _get_all_tasks(self):
-        tasks_data = self._get_all_task_data_from_db()
+    def _get_tasks_that_are_not_done(self):
+        tasks_data = self._get_all_task_data_from_db_that_are_not_done()
         tasks = self._make_tasks_from_data(tasks_data)
         return tasks
 
@@ -33,13 +33,14 @@ class TaskRetriever:
                 estimated_time_in_minutes=task_data[8],
                 cognitive_load=task_data[9],
             )
+            task.id = task_data[0]
             tasks.append(task)
         return tasks
 
-    def _get_all_task_data_from_db(self):
+    def _get_all_task_data_from_db_that_are_not_done(self):
         db = sqlite3.connect("tasks.db")
         cursor = db.cursor()
-        cursor.execute("SELECT * FROM tasks")
+        cursor.execute("SELECT * FROM tasks WHERE done = 0")
         tasks_data = cursor.fetchall()
         db.close()
         return tasks_data

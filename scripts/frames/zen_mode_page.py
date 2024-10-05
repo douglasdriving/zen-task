@@ -1,6 +1,7 @@
 import tkinter as tk
 from ..task_retriever import TaskRetriever
 from ..task import Task
+from ..task_checker import TaskChecker
 
 
 class ZenModePage(tk.Frame):
@@ -10,11 +11,13 @@ class ZenModePage(tk.Frame):
     task_definition_of_done: tk.Label
     task_detailed_steps: tk.Label
     next_task: Task
+    task_checker: TaskChecker
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.task_retriever = TaskRetriever()
+        self.task_checker = TaskChecker()
         self._setup_page(controller)
 
     def on_show(self):
@@ -27,12 +30,11 @@ class ZenModePage(tk.Frame):
         tk.Button(self, text="End Task", command=self._end_task).pack(padx=10, pady=10)
 
     def _add_return_button(self, controller):
-        button = tk.Button(
+        tk.Button(
             self,
             text="<- Back",
             command=lambda: controller.show_frame("MainMenu"),
-        )
-        button.pack(padx=10, pady=10)
+        ).pack(padx=10, pady=10)
 
     def _add_task_info_fields(self):
         self.project_name = tk.Label(self, text="Project: ...")
@@ -54,4 +56,6 @@ class ZenModePage(tk.Frame):
         self.task_detailed_steps.config(text="Steps: " + self.next_task.detailed_steps)
 
     def _end_task(self):
-        print("Task ended. NOT IMPLEMENTED YET")
+        self.task_checker.set_task_as_done(self.next_task.id)
+        self.load_next_task()
+        # add some feedback to user? i wonder if there is easy vfx

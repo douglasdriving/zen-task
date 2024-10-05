@@ -3,6 +3,8 @@ from datetime import datetime
 
 class Task:
 
+    id: int
+
     description: str
     definition_of_done: str
     detailed_steps: str
