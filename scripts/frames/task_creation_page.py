@@ -28,11 +28,11 @@ class TaskCreationPage(tk.Frame):
         self.bottom_message.pack(padx=10, pady=10)
 
     def _add_input_fields(self):
-        self._add_labeled_text_field("description", "Description")
-        self._add_labeled_text_field("dod", "Definition of done")
-        self._add_labeled_text_field("steps", "Detailed steps")
+        self._add_labeled_text_field("description", "Description", 2)
+        self._add_labeled_text_field("dod", "Definition of done", 2)
+        self._add_labeled_text_field("steps", "Detailed steps", 5)
         self._add_deadline_field()
-        self._add_labeled_text_field("project", "Project")
+        self._add_labeled_text_field("project", "Project", 1)
         self._add_labeled_selection_row(
             "value",
             "How valuable would it be to complete this task?",
@@ -65,9 +65,9 @@ class TaskCreationPage(tk.Frame):
         self.selection_fields[label] = selectionRow
         selectionRow.pack(padx=10)
 
-    def _add_labeled_text_field(self, label: str, message: str):
+    def _add_labeled_text_field(self, label: str, message: str, height=3):
         tk.Label(self, text=message).pack(padx=10)
-        entryField = tk.Entry(self)
+        entryField = tk.Text(self, width=50, height=height)
         entryField.pack(padx=10)
         self.text_fields[label] = entryField
 
