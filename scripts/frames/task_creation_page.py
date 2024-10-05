@@ -1,19 +1,22 @@
 import tkinter as tk
-import tkcalendar as tkc
 from .form_elements.annotated_slider import AnnotatedSlider
 from ..task import Task
 from datetime import datetime
 from ..task_db_adder import TaskDbAdder
+from .form_elements.dropdown_calendar import DropDownCalendar
 
 
 class TaskCreationPage(tk.Frame):
+
+    calendars: dict[str, DropDownCalendar]
 
     def __init__(self, parent, controller):
         self.task_db_adder = TaskDbAdder()
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.text_fields: dict[str, tk.Entry] = {}
+        self.text_fields: dict[str, tk.Text] = {}
         self.sliders: dict[str, AnnotatedSlider] = {}
+        self.calendars = {}
         self._add_page_content()
 
     def _add_page_content(self):
@@ -22,6 +25,7 @@ class TaskCreationPage(tk.Frame):
         self._add_input_fields()
         tk.Button(self, text="Add", command=self._add_task).pack(padx=10, pady=10)
         self._add_bottom_message_label()
+        self._clean_values()
 
     def _add_bottom_message_label(self):
         self.bottom_message = tk.Label(self, text="")
@@ -31,7 +35,8 @@ class TaskCreationPage(tk.Frame):
         self._add_labeled_text_field("description", "Description", 2)
         self._add_labeled_text_field("dod", "Definition of done", 2)
         self._add_labeled_text_field("steps", "Detailed steps", 5)
-        self._add_deadline_field()
+        self._add_calendar_field("deadline")
+        self._add_calendar_field("waiting for date")
         self._add_labeled_text_field("project", "Project", 1)
         self._add_labeled_slider(
             "value",
@@ -71,10 +76,10 @@ class TaskCreationPage(tk.Frame):
             ],
         )
 
-    def _add_deadline_field(self):
-        tk.Label(self, text="Deadline").pack(padx=10)
-        self.deadline_entry_field = tkc.Calendar(self)
-        self.deadline_entry_field.pack(padx=10)
+    def _add_calendar_field(self, label: str):
+        calendar = DropDownCalendar(self, self.controller, label)
+        calendar.pack()
+        self.calendars[label] = calendar
 
     def _add_labeled_slider(
         self, label: str, message: str, values: list, annotations: list
@@ -119,15 +124,13 @@ class TaskCreationPage(tk.Frame):
 
     def _add_task(self):
 
-        deadline = self.deadline_entry_field.get_date()
-        deadline_datetime = datetime.strptime(deadline, "%m/%d/%y")
-
         task = Task(
-            description=self.text_fields["description"].get(),
-            definition_of_done=self.text_fields["dod"].get(),
-            detailed_steps=self.text_fields["steps"].get(),
-            project=self.text_fields["project"].get(),
-            deadline=deadline_datetime,
+            description=self.text_fields["description"].get("1.0", tk.END).strip(),
+            definition_of_done=self.text_fields["dod"].get("1.0", tk.END).strip(),
+            detailed_steps=self.text_fields["steps"].get("1.0", tk.END).strip(),
+            deadline=self.calendars["deadline"].get_date(),
+            project=self.text_fields["project"].get("1.0", tk.END).strip(),
+            waiting_until=self.calendars["waiting for date"].get_date(),
         )
 
         task.rate(
@@ -144,8 +147,9 @@ class TaskCreationPage(tk.Frame):
 
     def _clean_values(self):
         for entry in self.text_fields.values():
-            entry.delete(0, tk.END)
-        self.deadline_entry_field._remove_selection()
+            entry.delete("1.0", tk.END)
+        for calendar in self.calendars.values():
+            calendar.reset()
         self.time_estimate_field.delete(0, tk.END)
         for selection in self.sliders.values():
             selection.value_var.set(-1)

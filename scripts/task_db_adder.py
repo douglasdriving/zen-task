@@ -27,6 +27,7 @@ class TaskDbAdder:
                 detailed_steps TEXT NOT NULL,
                 definition_of_done TEXT NOT NULL,
                 deadline INTEGER,
+                waiting_for_date INTEGER,
                 project TEXT NOT NULL,
                 value INTEGER NOT NULL,
                 excitement INTEGER NOT NULL,
@@ -38,6 +39,15 @@ class TaskDbAdder:
         self.db.commit()
 
     def add_task(self, task: Task):
+
+        deadline: int = None
+        if task.deadline:
+            deadline = int(task.deadline.timestamp())
+
+        waiting_for_date: int = None
+        if task.waiting_for_date:
+            waiting_for_date = int(task.waiting_for_date.timestamp())
+
         self.cursor.execute(
             """
             INSERT INTO tasks (
@@ -45,19 +55,21 @@ class TaskDbAdder:
                 definition_of_done,
                 detailed_steps,
                 deadline,
+                waiting_for_date,
                 project,
                 value,
                 excitement,
                 estimated_time_in_minutes,
                 cognitive_load
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 task.description,
                 task.definition_of_done,
                 task.detailed_steps,
-                int(task.deadline.timestamp()),
+                deadline,
+                waiting_for_date,
                 task.project,
                 task.value,
                 task.excitement,
@@ -66,4 +78,3 @@ class TaskDbAdder:
             ),
         )
         self.db.commit()
-        print("Task saved: ", task.description)

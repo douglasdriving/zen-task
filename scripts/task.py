@@ -9,6 +9,7 @@ class Task:
     definition_of_done: str
     detailed_steps: str
     deadline: datetime
+    waiting_for_date: datetime
     project: str
 
     value: int
@@ -23,12 +24,14 @@ class Task:
         detailed_steps: str,
         project: str,
         deadline: datetime = None,
+        waiting_until: datetime = None,
     ):
         self.description = description
         self.definition_of_done = definition_of_done
         self.detailed_steps = detailed_steps
         self.deadline = deadline
         self.project = project
+        self.waiting_for_date = waiting_until
 
     def rate(
         self,
@@ -53,6 +56,7 @@ class Task:
         print("Definition of done: ", self.definition_of_done)
         print("Detailed steps: ", self.detailed_steps)
         print("Deadline: ", self.deadline)
+        print("Waiting until: ", self.waiting_for_date)
         print("Project: ", self.project)
 
     def print_ratings(self):

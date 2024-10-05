@@ -8,15 +8,15 @@ class TaskRetriever:
         pass
 
     def get_next_task(self):
-        tasks = self._get_tasks_that_are_not_done()
+        tasks = self._get_avaiable_tasks()
         if len(tasks) == 0:
             return None
         else:
             next_task = self._pick_best_task(tasks)
             return next_task
 
-    def _get_tasks_that_are_not_done(self):
-        tasks_data = self._get_all_task_data_from_db_that_are_not_done()
+    def _get_avaiable_tasks(self):
+        tasks_data = self._get_available_tasks_from_db()
         tasks = self._make_tasks_from_data(tasks_data)
         return tasks
 
@@ -40,10 +40,17 @@ class TaskRetriever:
             tasks.append(task)
         return tasks
 
-    def _get_all_task_data_from_db_that_are_not_done(self):
+    def _get_available_tasks_from_db(self):
         db = sqlite3.connect("tasks.db")
         cursor = db.cursor()
-        cursor.execute("SELECT * FROM tasks WHERE done = 0")
+        cursor.execute(
+            """
+            SELECT * FROM tasks
+            WHERE done = 0
+            AND (waiting_for_date IS NULL OR waiting_for_date <= ?)
+            """,
+            (datetime.now().timestamp(),),
+        )
         tasks_data = cursor.fetchall()
         db.close()
         return tasks_data
@@ -53,7 +60,6 @@ class TaskRetriever:
         best_score = next_task.calculate_score()
         for task in tasks:
             score = task.calculate_score()
-            print(f"Task [{task.description}] has score {score}")
             if score > best_score:
                 next_task = task
                 best_score = task.calculate_score()
