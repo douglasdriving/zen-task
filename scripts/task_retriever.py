@@ -9,8 +9,11 @@ class TaskRetriever:
 
     def get_next_task(self):
         tasks = self._get_tasks_that_are_not_done()
-        next_task = self._pick_best_task(tasks)
-        return next_task
+        if len(tasks) == 0:
+            return None
+        else:
+            next_task = self._pick_best_task(tasks)
+            return next_task
 
     def _get_tasks_that_are_not_done(self):
         tasks_data = self._get_all_task_data_from_db_that_are_not_done()
@@ -49,7 +52,9 @@ class TaskRetriever:
         next_task: Task = tasks[0]
         best_score = next_task.calculate_score()
         for task in tasks:
-            if task.calculate_score() > best_score:
+            score = task.calculate_score()
+            print(f"Task [{task.description}] has score {score}")
+            if score > best_score:
                 next_task = task
                 best_score = task.calculate_score()
         return next_task

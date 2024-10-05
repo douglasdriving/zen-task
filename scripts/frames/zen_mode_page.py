@@ -13,6 +13,8 @@ class ZenModePage(tk.Frame):
     next_task: Task
     task_checker: TaskChecker
 
+    end_task_button: tk.Button
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -27,7 +29,8 @@ class ZenModePage(tk.Frame):
         self._add_return_button(controller)
         tk.Label(self, text="Zen Mode").pack(padx=10, pady=10)
         self._add_task_info_fields()
-        tk.Button(self, text="End Task", command=self._end_task).pack(padx=10, pady=10)
+        self.end_task_button = tk.Button(self, text="End Task", command=self._end_task)
+        self.end_task_button.pack(padx=10, pady=10)
 
     def _add_return_button(self, controller):
         tk.Button(
@@ -47,13 +50,23 @@ class ZenModePage(tk.Frame):
         self.task_detailed_steps.pack(padx=10, pady=10)
 
     def load_next_task(self):
-        self.next_task: Task = self.task_retriever.get_next_task()
-        self.task_description.config(text="Task: " + self.next_task.description)
-        self.project_name.config(text="Project: " + self.next_task.project)
-        self.task_definition_of_done.config(
-            text="Definition of done: " + self.next_task.definition_of_done
-        )
-        self.task_detailed_steps.config(text="Steps: " + self.next_task.detailed_steps)
+        self.next_task: Task = self.task_retriever.get_next_task()  # might return NONE
+        if self.next_task is None:
+            self.task_description.config(text="No tasks left")
+            self.project_name.config(text="")
+            self.task_definition_of_done.config(text="")
+            self.task_detailed_steps.config(text="")
+            self.end_task_button.config(state="disabled")
+        else:
+            self.task_description.config(text="Task: " + self.next_task.description)
+            self.project_name.config(text="Project: " + self.next_task.project)
+            self.task_definition_of_done.config(
+                text="Definition of done: " + self.next_task.definition_of_done
+            )
+            self.task_detailed_steps.config(
+                text="Steps: " + self.next_task.detailed_steps
+            )
+            self.end_task_button.config(state="normal")
 
     def _end_task(self):
         self.task_checker.set_task_as_done(self.next_task.id)
