@@ -63,17 +63,9 @@ class Task:
 
     def calculate_score(self):
         time_score = self._calculate_time_score()
-        score = self.value + self.excitement - time_score - self.cognitive_load
+        score = (self.value * self.excitement) / (time_score * self.cognitive_load)
         return score
 
     def _calculate_time_score(self):
-        time_score = 1
-        if self.estimated_time_in_minutes > 5:
-            time_score = 2
-        if self.estimated_time_in_minutes > 15:
-            time_score = 3
-        if self.estimated_time_in_minutes > 45:
-            time_score = 4
-        if self.estimated_time_in_minutes > 120:
-            time_score = 5
+        time_score = self.estimated_time_in_minutes / 10
         return time_score
