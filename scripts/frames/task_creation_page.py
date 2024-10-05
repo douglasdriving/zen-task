@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkcalendar as tkc
-from .form_elements.selection_row import SelectionRow
+from .form_elements.annotated_slider import AnnotatedSlider
 from ..task import Task
 from datetime import datetime
 from ..task_db_adder import TaskDbAdder
@@ -13,7 +13,7 @@ class TaskCreationPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.text_fields: dict[str, tk.Entry] = {}
-        self.selection_fields: dict[str, SelectionRow] = {}
+        self.sliders: dict[str, AnnotatedSlider] = {}
         self._add_page_content()
 
     def _add_page_content(self):
@@ -33,21 +33,42 @@ class TaskCreationPage(tk.Frame):
         self._add_labeled_text_field("steps", "Detailed steps", 5)
         self._add_deadline_field()
         self._add_labeled_text_field("project", "Project", 1)
-        self._add_labeled_selection_row(
+        self._add_labeled_slider(
             "value",
-            "How valuable would it be to complete this task?",
+            "How much better would your life be if you completed this task?",
             [1, 2, 3, 4, 5],
+            [
+                "it would not change",
+                "it would be a little bit better",
+                "it would improve",
+                "it would improve a lot",
+                "it would be a game changer",
+            ],
         )
-        self._add_labeled_selection_row(
+        self._add_labeled_slider(
             "excitement",
             "How excited are you about working on this?",
             [1, 2, 3, 4, 5],
+            [
+                "i really dont want to work on this",
+                "not very excited",
+                "this is ok",
+                "this is exciting",
+                "i cant wait to work on this",
+            ],
         )
         self._add_time_estimate_field()
-        self._add_labeled_selection_row(
+        self._add_labeled_slider(
             "effort",
             "How much effort do you think this task will require?",
             [1, 2, 3, 4, 5],
+            [
+                "trivial, i know exactly what to do",
+                "easy, i know what to do",
+                "medium, it will require a bit of thinking",
+                "hard, i will need to focus",
+                "very hard, i will need a lot of mental energy",
+            ],
         )
 
     def _add_deadline_field(self):
@@ -55,15 +76,15 @@ class TaskCreationPage(tk.Frame):
         self.deadline_entry_field = tkc.Calendar(self)
         self.deadline_entry_field.pack(padx=10)
 
-    def _add_labeled_selection_row(self, label: str, message: str, values: list):
+    def _add_labeled_slider(
+        self, label: str, message: str, values: list, annotations: list
+    ):
+        if len(values) != len(annotations):
+            Exception("Values and annotations must have the same length")
         tk.Label(self, text=message).pack(padx=10)
-        selectionRow = SelectionRow(
-            self,
-            self.controller,
-            values,
-        )
-        self.selection_fields[label] = selectionRow
-        selectionRow.pack(padx=10)
+        slider = AnnotatedSlider(self, self.controller, values, annotations)
+        self.sliders[label] = slider
+        slider.pack(padx=10)
 
     def _add_labeled_text_field(self, label: str, message: str, height=3):
         tk.Label(self, text=message).pack(padx=10)
@@ -110,10 +131,10 @@ class TaskCreationPage(tk.Frame):
         )
 
         task.rate(
-            value=self.selection_fields["value"].get_selected_value(),
-            excitement=self.selection_fields["excitement"].get_selected_value(),
+            value=self.sliders["value"].get_selected_value(),
+            excitement=self.sliders["excitement"].get_selected_value(),
             estimated_time_in_minutes=self.time_estimate_field.get(),
-            cognitive_load=self.selection_fields["effort"].get_selected_value(),
+            cognitive_load=self.sliders["effort"].get_selected_value(),
         )
 
         self.task_db_adder.add_task(task)
@@ -126,5 +147,5 @@ class TaskCreationPage(tk.Frame):
             entry.delete(0, tk.END)
         self.deadline_entry_field._remove_selection()
         self.time_estimate_field.delete(0, tk.END)
-        for selection in self.selection_fields.values():
+        for selection in self.sliders.values():
             selection.value_var.set(-1)
