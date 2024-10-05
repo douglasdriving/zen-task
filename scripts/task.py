@@ -62,10 +62,16 @@ class Task:
         print("Cognitive load: ", self.cognitive_load)
 
     def calculate_score(self):
-        time_score = self._calculate_time_score()
-        score = (self.value * self.excitement) / (time_score * self.cognitive_load)
+        value_multiplier = self.value
+        excitement_multiplier = self.excitement
+        time_multiplier = 1 / self.estimated_time_in_minutes
+        effort_multiplier = 1 / self.cognitive_load
+        if datetime.now().hour > 13:  # in the afternoon, focus on lighter tasks
+            effort_multiplier = 1 / self.cognitive_load
+        score = (
+            value_multiplier
+            * excitement_multiplier
+            * time_multiplier
+            * effort_multiplier
+        )
         return score
-
-    def _calculate_time_score(self):
-        time_score = self.estimated_time_in_minutes / 10
-        return time_score
