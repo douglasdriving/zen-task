@@ -1,21 +1,27 @@
 import tkinter as tk
 from .form_elements.annotated_slider import AnnotatedSlider
 from ..task import Task
-from datetime import datetime
 from ..task_db_adder import TaskDbAdder
 from .form_elements.dropdown_calendar import DropDownCalendar
 
 
 class TaskCreationPage(tk.Frame):
 
+    parent: object
+    controller: object
+    text_fields: dict[str, tk.Text]
+    sliders: dict[str, AnnotatedSlider]
     calendars: dict[str, DropDownCalendar]
+    bottom_message: tk.Label
+    time_estimate_field: tk.Entry
+    task_db_adder: TaskDbAdder
 
     def __init__(self, parent, controller):
         self.task_db_adder = TaskDbAdder()
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.text_fields: dict[str, tk.Text] = {}
-        self.sliders: dict[str, AnnotatedSlider] = {}
+        self.text_fields = {}
+        self.sliders = {}
         self.calendars = {}
         self._add_page_content()
 
@@ -38,18 +44,26 @@ class TaskCreationPage(tk.Frame):
         self._add_calendar_field("deadline")
         self._add_calendar_field("waiting for date")
         self._add_labeled_text_field("project", "Project", 1)
+        self._add_value_slider()
+        self._add_excitement_slider()
+        self._add_time_estimate_field()
+        self._add_effort_slider()
+
+    def _add_effort_slider(self):
         self._add_labeled_slider(
-            "value",
-            "How much better would your life be if you completed this task?",
+            "effort",
+            "How much effort do you think this task will require?",
             [1, 2, 3, 4, 5],
             [
-                "it would not change",
-                "it would be a little bit better",
-                "it would improve",
-                "it would improve a lot",
-                "it would be a game changer",
+                "trivial, i know exactly what to do",
+                "easy, i know what to do",
+                "medium, it will require a bit of thinking",
+                "hard, i will need to focus",
+                "very hard, i will need a lot of mental energy",
             ],
         )
+
+    def _add_excitement_slider(self):
         self._add_labeled_slider(
             "excitement",
             "How excited are you about working on this?",
@@ -62,17 +76,18 @@ class TaskCreationPage(tk.Frame):
                 "i cant wait to work on this",
             ],
         )
-        self._add_time_estimate_field()
+
+    def _add_value_slider(self):
         self._add_labeled_slider(
-            "effort",
-            "How much effort do you think this task will require?",
+            "value",
+            "How much better would your life be if you completed this task?",
             [1, 2, 3, 4, 5],
             [
-                "trivial, i know exactly what to do",
-                "easy, i know what to do",
-                "medium, it will require a bit of thinking",
-                "hard, i will need to focus",
-                "very hard, i will need a lot of mental energy",
+                "it would not change",
+                "it would be a little bit better",
+                "it would improve",
+                "it would improve a lot",
+                "it would be a game changer",
             ],
         )
 
@@ -123,7 +138,13 @@ class TaskCreationPage(tk.Frame):
         self.time_estimate_field = entry
 
     def _add_task(self):
+        task = self._create_task_from_user_input()
+        self.task_db_adder.add_task(task)
+        self.bottom_message.config(text="Added task: " + task.description)
+        self._clean_values()
+        self.text_fields["description"].focus_set()
 
+    def _create_task_from_user_input(self):
         task = Task(
             description=self.text_fields["description"].get("1.0", tk.END).strip(),
             definition_of_done=self.text_fields["dod"].get("1.0", tk.END).strip(),
@@ -132,18 +153,13 @@ class TaskCreationPage(tk.Frame):
             project=self.text_fields["project"].get("1.0", tk.END).strip(),
             waiting_until=self.calendars["waiting for date"].get_date(),
         )
-
         task.rate(
             value=self.sliders["value"].get_selected_value(),
             excitement=self.sliders["excitement"].get_selected_value(),
             estimated_time_in_minutes=self.time_estimate_field.get(),
             cognitive_load=self.sliders["effort"].get_selected_value(),
         )
-
-        self.task_db_adder.add_task(task)
-        self.bottom_message.config(text="Added task: " + task.description)
-        self._clean_values()
-        self.text_fields["description"].focus_set()
+        return task
 
     def _clean_values(self):
         for entry in self.text_fields.values():

@@ -79,3 +79,15 @@ class Task:
             * effort_multiplier
         )
         return score
+
+    def get_deadline_as_int_or_none(self):
+        return self._get_date_as_int_or_none(self.deadline)
+
+    def get_waiting_for_date_as_int_or_none(self):
+        return self._get_date_as_int_or_none(self.waiting_for_date)
+
+    def _get_date_as_int_or_none(self, datetime: datetime):
+        timestamp: int = None
+        if datetime:
+            timestamp = int(datetime.timestamp())
+        return timestamp

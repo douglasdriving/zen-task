@@ -40,14 +40,6 @@ class TaskDbAdder:
 
     def add_task(self, task: Task):
 
-        deadline: int = None
-        if task.deadline:
-            deadline = int(task.deadline.timestamp())
-
-        waiting_for_date: int = None
-        if task.waiting_for_date:
-            waiting_for_date = int(task.waiting_for_date.timestamp())
-
         self.cursor.execute(
             """
             INSERT INTO tasks (
@@ -68,8 +60,8 @@ class TaskDbAdder:
                 task.description,
                 task.definition_of_done,
                 task.detailed_steps,
-                deadline,
-                waiting_for_date,
+                task.get_deadline_as_int_or_none(),
+                task.get_waiting_for_date_as_int_or_none(),
                 task.project,
                 task.value,
                 task.excitement,
