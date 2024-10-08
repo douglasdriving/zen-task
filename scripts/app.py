@@ -3,6 +3,7 @@ from tkinter import ttk
 from .frames.main_menu import MainMenu
 from .frames.task_creation_page import TaskCreationPage
 from .frames.zen_mode_page import ZenModePage
+from .frames.meditation_page import MeditationPage
 
 
 class App:
@@ -21,7 +22,7 @@ class App:
 
     def _add_frames(self):
         self.frames = {}
-        for F in (MainMenu, TaskCreationPage, ZenModePage):
+        for F in (MainMenu, TaskCreationPage, ZenModePage, MeditationPage):
             page_name = F.__name__
             frame = F(parent=self.scrollable_frame, controller=self)
             self.frames[page_name] = frame
@@ -59,6 +60,7 @@ class App:
         frame.tkraise()
         if hasattr(frame, "on_show"):
             frame.on_show()
+        return frame
 
     def run(self):
         self.window.mainloop()

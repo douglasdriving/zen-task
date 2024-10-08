@@ -2,10 +2,13 @@ import tkinter as tk
 from ..task_retriever import TaskRetriever
 from ..task import Task
 from ..task_checker import TaskChecker
+from .meditation_page import MeditationPage
 
 
 class ZenModePage(tk.Frame):
 
+    parent: tk.Frame
+    controller: object
     task_description: tk.Label
     project_name: tk.Label
     task_definition_of_done: tk.Label
@@ -69,6 +72,7 @@ class ZenModePage(tk.Frame):
             self.end_task_button.config(state="normal")
 
     def _end_task(self):
+        length_of_task_just_done = self.next_task.estimated_time_in_minutes * 60
         self.task_checker.set_task_as_done(self.next_task.id)
-        self.load_next_task()
-        # add some feedback to user? i wonder if there is easy vfx
+        meditation_page: MeditationPage = self.controller.show_frame("MeditationPage")
+        meditation_page.start_meditation(length_of_task_just_done / 6)
