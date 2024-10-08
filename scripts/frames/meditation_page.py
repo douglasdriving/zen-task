@@ -48,8 +48,8 @@ class MeditationPage(tk.Frame):
         self._add_return_button()
 
     def _play_sound(self):
-        frequency = 300  # Set Frequency To 2500 Hertz
-        duration = 700  # Set Duration To 1000 ms == 1 second
+        frequency = 300
+        duration = 700
         winsound.Beep(frequency, duration)
 
     def _add_next_task_button(self):
