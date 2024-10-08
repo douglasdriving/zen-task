@@ -8,14 +8,14 @@ class TaskRetriever:
         pass
 
     def get_next_task(self):
-        tasks = self._get_avaiable_tasks()
+        tasks = self._get_available_tasks()
         if len(tasks) == 0:
             return None
         else:
             next_task = self._pick_best_task(tasks)
             return next_task
 
-    def _get_avaiable_tasks(self):
+    def _get_available_tasks(self):
         tasks_data = self._get_available_tasks_from_db()
         tasks = self._make_tasks_from_data(tasks_data)
         return tasks
@@ -68,10 +68,30 @@ class TaskRetriever:
 
     def _pick_best_task(self, tasks: list[Task]):
         next_task: Task = tasks[0]
-        best_score = next_task.calculate_score()
         for task in tasks:
-            score = task.calculate_score()
-            if score > best_score:
-                next_task = task
-                best_score = task.calculate_score()
+            next_task = self._pick_best_of_two_tasks(task, next_task)
         return next_task
+
+    def _pick_best_of_two_tasks(self, task_1: Task, task_2: Task):
+        deadline_status_is_same = (
+            task_1.is_deadline_today_or_earlier()
+            == task_2.is_deadline_today_or_earlier()
+        )
+        if deadline_status_is_same:
+            if task_1.calculate_score() > task_2.calculate_score():
+                return task_1
+            else:
+                return task_2
+        else:
+            if task_1.is_deadline_today_or_earlier:
+                print(
+                    "task has deadline today or earlier, so picking it: ",
+                    task_1.description,
+                )
+                return task_1
+            else:
+                print(
+                    "task has deadline today or earlier, so picking it: ",
+                    task_2.description,
+                )
+                return task_2

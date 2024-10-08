@@ -91,3 +91,9 @@ class Task:
         if datetime:
             timestamp = int(datetime.timestamp())
         return timestamp
+
+    def is_deadline_today_or_earlier(self):
+        if not self.deadline:
+            return False
+        else:
+            return self.deadline.date() <= datetime.now().date()
