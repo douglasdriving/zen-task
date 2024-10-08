@@ -1,2 +1,3 @@
--- SQLite
-ALTER TABLE tasks ADD COLUMN waiting_for_date INTEGER;
+UPDATE tasks
+SET deadline = NULL
+WHERE deadline = 1728226800;

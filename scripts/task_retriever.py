@@ -83,15 +83,7 @@ class TaskRetriever:
             else:
                 return task_2
         else:
-            if task_1.is_deadline_today_or_earlier:
-                print(
-                    "task has deadline today or earlier, so picking it: ",
-                    task_1.description,
-                )
+            if task_1.is_deadline_today_or_earlier():
                 return task_1
             else:
-                print(
-                    "task has deadline today or earlier, so picking it: ",
-                    task_2.description,
-                )
                 return task_2
