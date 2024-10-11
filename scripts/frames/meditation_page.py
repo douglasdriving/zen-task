@@ -25,14 +25,15 @@ class MeditationPage(tk.Frame):
         self._create_next_task_button()
         self._create_return_button()
 
-    def start_meditation(self, time_in_seconds: int):
+    def start_meditation(self, time_in_seconds: float):
         self.instructions.config(
             text=f"close your eyes and breath. you are here and now"
         )
         self._start_timer(time_in_seconds)
         self._set_buttons_shown(False)
 
-    def _start_timer(self, time_in_seconds: int):
+    def _start_timer(self, time_in_seconds: float):
+        time_in_seconds = int(time_in_seconds)  # Convert to integer to avoid decimals
         self.time_label.config(
             text=f"{time_in_seconds // 60:02}:{time_in_seconds % 60:02}"
         )

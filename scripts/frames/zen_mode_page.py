@@ -15,6 +15,8 @@ class ZenModePage(tk.Frame):
     task_detailed_steps: tk.Label
     next_task: Task
     task_checker: TaskChecker
+    time_spent_on_current_task: int
+    is_timer_running: bool
 
     end_task_button: tk.Button
 
@@ -70,9 +72,20 @@ class ZenModePage(tk.Frame):
                 text="Steps: " + self.next_task.detailed_steps
             )
             self.end_task_button.config(state="normal")
+            self._start_timer()
+
+    def _start_timer(self):
+        def update_timer():
+            if self.is_timer_running:
+                self.time_spent_on_current_task += 1
+                self.after(1000, update_timer)
+
+        self.is_timer_running = True
+        self.time_spent_on_current_task = 0
+        self.after(1000, update_timer)
 
     def _end_task(self):
-        length_of_task_just_done = self.next_task.estimated_time_in_minutes * 60
+        self.is_timer_running = False
         self.task_checker.set_task_as_done(self.next_task.id)
         meditation_page: MeditationPage = self.controller.show_frame("MeditationPage")
-        meditation_page.start_meditation(length_of_task_just_done / 6)
+        meditation_page.start_meditation(float(self.time_spent_on_current_task) / 10)
