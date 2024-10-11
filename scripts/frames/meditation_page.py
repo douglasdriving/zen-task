@@ -8,6 +8,8 @@ class MeditationPage(tk.Frame):
     controller: object
     instructions: tk.Label
     time_label: tk.Label
+    next_task_button: tk.Button
+    return_button: tk.Button
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -20,14 +22,21 @@ class MeditationPage(tk.Frame):
         self.time_label = tk.Label(self, text="00:00")
         self.instructions.pack()
         self.time_label.pack()
+        self._create_next_task_button()
+        self._create_return_button()
 
     def start_meditation(self, time_in_seconds: int):
         self.instructions.config(
             text=f"close your eyes and breath. you are here and now"
         )
         self._start_timer(time_in_seconds)
+        self._set_buttons_shown(False)
 
     def _start_timer(self, time_in_seconds: int):
+        self.time_label.config(
+            text=f"{time_in_seconds // 60:02}:{time_in_seconds % 60:02}"
+        )
+
         def update_timer():
             nonlocal time_in_seconds
             minutes, seconds = divmod(time_in_seconds, 60)
@@ -43,25 +52,31 @@ class MeditationPage(tk.Frame):
     def _on_meditation_complete(self):
         self._play_sound()
         self.instructions.config(text="thank you for slowing down")
-        self.time_label.pack_forget()
-        self._add_next_task_button()
-        self._add_return_button()
+        self._set_buttons_shown(True)
 
     def _play_sound(self):
         frequency = 300
         duration = 700
         winsound.Beep(frequency, duration)
 
-    def _add_next_task_button(self):
-        tk.Button(
+    def _set_buttons_shown(self, show: bool):
+        if show:
+            self.next_task_button.pack()
+            self.return_button.pack()
+        else:
+            self.next_task_button.pack_forget()
+            self.return_button.pack_forget()
+
+    def _create_next_task_button(self):
+        self.next_task_button = tk.Button(
             self,
             text="Next Task ->",
             command=lambda: self.controller.show_frame("ZenModePage"),
-        ).pack(padx=10, pady=10)
+        )
 
-    def _add_return_button(self):
-        tk.Button(
+    def _create_return_button(self):
+        self.return_button = tk.Button(
             self,
             text="<- Main Menu",
             command=lambda: self.controller.show_frame("MainMenu"),
-        ).pack(padx=10, pady=10)
+        )
