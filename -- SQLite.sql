@@ -1,3 +1,3 @@
-UPDATE tasks
-SET deadline = NULL
-WHERE deadline = 1728226800;
+SELECT DISTINCT project
+FROM tasks
+WHERE done = 0;

@@ -3,6 +3,7 @@ from .form_elements.annotated_slider import AnnotatedSlider
 from ..task import Task
 from ..task_db_adder import TaskDbAdder
 from .form_elements.dropdown_calendar import DropDownCalendar
+from ..project_db_retriever import ProjectDbRetriever
 
 
 class TaskCreationPage(tk.Frame):
@@ -43,11 +44,29 @@ class TaskCreationPage(tk.Frame):
         self._add_labeled_text_field("steps", "Detailed steps", 5)
         self._add_calendar_field("deadline")
         self._add_calendar_field("waiting for date")
-        self._add_labeled_text_field("project", "Project", 1)
+        self._add_project_field()
         self._add_value_slider()
         self._add_excitement_slider()
         self._add_time_estimate_field()
         self._add_effort_slider()
+
+    def _add_project_field(self):
+
+        def _on_click(self):
+            print("clicked")
+
+        project_retriever = ProjectDbRetriever()
+        projects = project_retriever.get_all_projects()
+
+        text_widget = tk.Text(self, wrap="word", width=50, height=1)
+        text_widget.pack()
+        text_widget.insert(tk.END, "Project (")
+        text_widget.insert(tk.END, "click me", "clickable")
+        text_widget.tag_configure("clickable", foreground="blue", underline=True)
+        text_widget.tag_bind("clickable", "<Button-1>", _on_click)
+        text_widget.configure(state=tk.DISABLED)
+
+        # self._add_labeled_text_field("project", "Project", 1)
 
     def _add_effort_slider(self):
         self._add_labeled_slider(
