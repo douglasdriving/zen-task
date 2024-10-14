@@ -4,6 +4,7 @@ from .frames.main_menu import MainMenu
 from .frames.task_creation_page import TaskCreationPage
 from .frames.zen_mode_page import ZenModePage
 from .frames.meditation_page import MeditationPage
+from .frames.startup_page import StartupPage
 
 
 class App:
@@ -18,11 +19,11 @@ class App:
         self._create_window()
         self._create_scrollable_canvas()
         self._add_frames()
-        self.show_frame("MainMenu")
+        self.show_frame("StartupPage")
 
     def _add_frames(self):
         self.frames = {}
-        for F in (MainMenu, TaskCreationPage, ZenModePage, MeditationPage):
+        for F in (MainMenu, TaskCreationPage, ZenModePage, MeditationPage, StartupPage):
             page_name = F.__name__
             frame = F(parent=self.scrollable_frame, controller=self)
             self.frames[page_name] = frame
