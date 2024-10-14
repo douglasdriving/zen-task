@@ -4,6 +4,7 @@ from ..task import Task
 from ..task_db_adder import TaskDbAdder
 from .form_elements.dropdown_calendar import DropDownCalendar
 from ..project_db_retriever import ProjectDbRetriever
+from .form_elements.entry_with_dropdown import DropdownEntry
 
 
 class TaskCreationPage(tk.Frame):
@@ -13,6 +14,7 @@ class TaskCreationPage(tk.Frame):
     text_fields: dict[str, tk.Text]
     sliders: dict[str, AnnotatedSlider]
     calendars: dict[str, DropDownCalendar]
+    project_entry: DropdownEntry
     bottom_message: tk.Label
     time_estimate_field: tk.Entry
     task_db_adder: TaskDbAdder
@@ -51,22 +53,11 @@ class TaskCreationPage(tk.Frame):
         self._add_effort_slider()
 
     def _add_project_field(self):
-
-        def _on_click(self):
-            print("clicked")
-
+        tk.Label(self, text="Project").pack()
         project_retriever = ProjectDbRetriever()
         projects = project_retriever.get_all_projects()
-
-        text_widget = tk.Text(self, wrap="word", width=50, height=1)
-        text_widget.pack()
-        text_widget.insert(tk.END, "Project (")
-        text_widget.insert(tk.END, "click me", "clickable")
-        text_widget.tag_configure("clickable", foreground="blue", underline=True)
-        text_widget.tag_bind("clickable", "<Button-1>", _on_click)
-        text_widget.configure(state=tk.DISABLED)
-
-        # self._add_labeled_text_field("project", "Project", 1)
+        self.project_entry = dropdown_entry = DropdownEntry(self, projects)
+        dropdown_entry.pack()
 
     def _add_effort_slider(self):
         self._add_labeled_slider(
@@ -169,7 +160,7 @@ class TaskCreationPage(tk.Frame):
             definition_of_done=self.text_fields["dod"].get("1.0", tk.END).strip(),
             detailed_steps=self.text_fields["steps"].get("1.0", tk.END).strip(),
             deadline=self.calendars["deadline"].get_date(),
-            project=self.text_fields["project"].get("1.0", tk.END).strip(),
+            project=self.project_entry.get_value().strip(),
             waiting_until=self.calendars["waiting for date"].get_date(),
         )
         task.rate(
