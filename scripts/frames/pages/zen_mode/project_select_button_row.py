@@ -11,6 +11,16 @@ class ProjectSelectButtonRow(tk.Frame):
         self.selected_project = tk.StringVar(
             value=""
         )  # Initialize with an empty string
+
+        # Add the "all" projects radio button
+        tk.Radiobutton(
+            self,
+            text="All",
+            value="all",
+            variable=self.selected_project,
+            command=lambda: project_select_command(None),
+        ).pack()
+
         for project in projects:
             tk.Radiobutton(
                 self,
@@ -19,3 +29,6 @@ class ProjectSelectButtonRow(tk.Frame):
                 variable=self.selected_project,
                 command=lambda p=project: project_select_command(p),
             ).pack()
+
+        # Set the "all" projects button as the default selected button
+        self.selected_project.set("all")

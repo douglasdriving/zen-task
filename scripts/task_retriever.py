@@ -16,10 +16,7 @@ class TaskRetriever:
             return next_task
 
     def _get_available_tasks(self, project=None):
-        print("Getting tasks for project: ", project)
         tasks_data = self._get_available_tasks_from_db(project)
-        for task_data in tasks_data:
-            print(task_data[1])
         tasks = self._make_tasks_from_data(tasks_data)
         return tasks
 
