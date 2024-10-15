@@ -1,7 +1,7 @@
 import tkinter as tk
-from ....task_retriever import TaskRetriever
-from ....task import Task
-from ....task_checker import TaskChecker
+from ....db.task_retriever import TaskRetriever
+from ....task.task import Task
+from ....db.task_checker import TaskChecker
 from ..meditation_page import MeditationPage
 from .project_select_button_row import ProjectSelectButtonRow
 

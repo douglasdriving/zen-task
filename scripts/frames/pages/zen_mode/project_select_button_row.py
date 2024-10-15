@@ -1,5 +1,5 @@
 import tkinter as tk
-from ....project_db_retriever import ProjectDbRetriever
+from ....db.project_db_retriever import ProjectDbRetriever
 
 
 class ProjectSelectButtonRow(tk.Frame):

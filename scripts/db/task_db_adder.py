@@ -1,5 +1,5 @@
 import sqlite3
-from .task import Task
+from ..task.task import Task
 
 
 class TaskDbAdder:

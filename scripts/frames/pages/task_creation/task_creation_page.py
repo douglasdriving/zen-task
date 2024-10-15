@@ -1,10 +1,10 @@
 import tkinter as tk
-from ..form_elements.annotated_slider import AnnotatedSlider
-from ...task import Task
-from ...task_db_adder import TaskDbAdder
-from ..form_elements.dropdown_calendar import DropDownCalendar
-from ...project_db_retriever import ProjectDbRetriever
-from ..form_elements.entry_with_dropdown import DropdownEntry
+from .annotated_slider import AnnotatedSlider
+from ....task.task import Task
+from ....db.task_db_adder import TaskDbAdder
+from .dropdown_calendar import DropDownCalendar
+from ....db.project_db_retriever import ProjectDbRetriever
+from .entry_with_dropdown import DropdownEntry
 
 
 class TaskCreationPage(tk.Frame):
