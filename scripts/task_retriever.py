@@ -7,30 +7,44 @@ class TaskRetriever:
     def __init__(self):
         pass
 
-    def get_next_task(self):
-        tasks = self._get_available_tasks()
+    def get_next_task(self, project=None):
+        tasks = self._get_available_tasks(project)
         if len(tasks) == 0:
             return None
         else:
             next_task = self._pick_best_task(tasks)
             return next_task
 
-    def _get_available_tasks(self):
-        tasks_data = self._get_available_tasks_from_db()
+    def _get_available_tasks(self, project=None):
+        print("Getting tasks for project: ", project)
+        tasks_data = self._get_available_tasks_from_db(project)
+        for task_data in tasks_data:
+            print(task_data[1])
         tasks = self._make_tasks_from_data(tasks_data)
         return tasks
 
-    def _get_available_tasks_from_db(self):
+    def _get_available_tasks_from_db(self, project=None):
         db = sqlite3.connect("tasks.db")
         cursor = db.cursor()
-        cursor.execute(
-            """
+        if project is None:
+            cursor.execute(
+                """
             SELECT * FROM tasks
             WHERE done = 0
             AND (waiting_for_date IS NULL OR waiting_for_date <= ?)
             """,
-            (datetime.now().timestamp(),),
-        )
+                (datetime.now().timestamp(),),
+            )
+        else:
+            cursor.execute(
+                """
+            SELECT * FROM tasks
+            WHERE done = 0
+            AND (waiting_for_date IS NULL OR waiting_for_date <= ?)
+            AND project = ?
+            """,
+                (datetime.now().timestamp(), project),
+            )
         tasks_data = cursor.fetchall()
         db.close()
         return tasks_data

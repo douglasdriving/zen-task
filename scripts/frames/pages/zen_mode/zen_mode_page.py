@@ -1,8 +1,9 @@
 import tkinter as tk
-from ..task_retriever import TaskRetriever
-from ..task import Task
-from ..task_checker import TaskChecker
-from .meditation_page import MeditationPage
+from ....task_retriever import TaskRetriever
+from ....task import Task
+from ....task_checker import TaskChecker
+from ..meditation_page import MeditationPage
+from .project_select_button_row import ProjectSelectButtonRow
 
 
 class ZenModePage(tk.Frame):
@@ -17,6 +18,7 @@ class ZenModePage(tk.Frame):
     task_checker: TaskChecker
     time_spent_on_current_task: int
     is_timer_running: bool
+    project_select_button_row: ProjectSelectButtonRow
 
     end_task_button: tk.Button
 
@@ -33,6 +35,7 @@ class ZenModePage(tk.Frame):
     def _setup_page(self, controller):
         self._add_return_button(controller)
         tk.Label(self, text="Zen Mode").pack(padx=10, pady=10)
+        ProjectSelectButtonRow(self, controller, self.load_next_task).pack()
         self._add_task_info_fields()
         self.end_task_button = tk.Button(self, text="End Task", command=self._end_task)
         self.end_task_button.pack(padx=10, pady=10)
@@ -54,8 +57,8 @@ class ZenModePage(tk.Frame):
         self.task_detailed_steps = tk.Label(self, text="Steps: ...")
         self.task_detailed_steps.pack(padx=10, pady=10)
 
-    def load_next_task(self):
-        self.next_task: Task = self.task_retriever.get_next_task()  # might return NONE
+    def load_next_task(self, project=None):
+        self.next_task: Task = self.task_retriever.get_next_task(project)
         if self.next_task is None:
             self.task_description.config(text="No tasks left")
             self.project_name.config(text="")

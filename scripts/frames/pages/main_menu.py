@@ -1,6 +1,6 @@
 import tkinter as tk
 from .task_creation_page import TaskCreationPage
-from .zen_mode_page import ZenModePage
+from .zen_mode.zen_mode_page import ZenModePage
 
 
 class MainMenu(tk.Frame):

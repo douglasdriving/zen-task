@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-from .frames.main_menu import MainMenu
-from .frames.task_creation_page import TaskCreationPage
-from .frames.zen_mode_page import ZenModePage
-from .frames.meditation_page import MeditationPage
-from .frames.startup_page import StartupPage
+from .frames.pages.main_menu import MainMenu
+from .frames.pages.task_creation_page import TaskCreationPage
+from .frames.pages.zen_mode.zen_mode_page import ZenModePage
+from .frames.pages.meditation_page import MeditationPage
+from .frames.pages.startup_page import StartupPage
 
 
 class App:
