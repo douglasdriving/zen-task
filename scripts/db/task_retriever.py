@@ -7,44 +7,40 @@ class TaskRetriever:
     def __init__(self):
         pass
 
-    def get_next_task(self, project=None):
-        tasks = self._get_available_tasks(project)
+    def get_next_task(self, projects: list[str] = []):
+        tasks = self._get_available_tasks(projects)
         if len(tasks) == 0:
             return None
         else:
             next_task = self._pick_best_task(tasks)
             return next_task
 
-    def _get_available_tasks(self, project=None):
-        tasks_data = self._get_available_tasks_from_db(project)
+    def _get_available_tasks(self, projects: list[str] = []):
+        tasks_data = self._get_available_tasks_from_db(projects)
         tasks = self._make_tasks_from_data(tasks_data)
         return tasks
 
-    def _get_available_tasks_from_db(self, project=None):
-        db = sqlite3.connect("tasks.db")
+    def _get_available_tasks_from_db(self, projects: list[str] = []):
+        placeholders = ", ".join(["?" for _ in projects])
+        query = """
+        SELECT * FROM tasks
+        WHERE done = 0
+        AND (waiting_for_date IS NULL OR waiting_for_date <= ?)
+        AND project IN ({})
+        """.format(
+            placeholders
+        )
+        params = [datetime.now().timestamp()] + projects
+        results = self._execute_query("tasks.db", query, params)
+        return results
+
+    def _execute_query(self, db_name: str, query: str, params: list):
+        db = sqlite3.connect(db_name)
         cursor = db.cursor()
-        if project is None:
-            cursor.execute(
-                """
-            SELECT * FROM tasks
-            WHERE done = 0
-            AND (waiting_for_date IS NULL OR waiting_for_date <= ?)
-            """,
-                (datetime.now().timestamp(),),
-            )
-        else:
-            cursor.execute(
-                """
-            SELECT * FROM tasks
-            WHERE done = 0
-            AND (waiting_for_date IS NULL OR waiting_for_date <= ?)
-            AND project = ?
-            """,
-                (datetime.now().timestamp(), project),
-            )
-        tasks_data = cursor.fetchall()
+        cursor.execute(query, params)
+        results = cursor.fetchall()
         db.close()
-        return tasks_data
+        return results
 
     def _make_tasks_from_data(self, tasks_data):
         tasks: list[Task] = []

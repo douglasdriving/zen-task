@@ -8,27 +8,20 @@ class ProjectSelectButtonRow(tk.Frame):
         tk.Frame.__init__(self, parent)
         retriever = ProjectDbRetriever()
         projects = retriever.get_all_projects()
-        self.selected_project = tk.StringVar(
-            value=""
-        )  # Initialize with an empty string
+        self.selected_projects = {}
 
-        # Add the "all" projects radio button
-        tk.Radiobutton(
-            self,
-            text="All",
-            value="all",
-            variable=self.selected_project,
-            command=lambda: project_select_command(None),
-        ).pack()
+        def update_selected_projects():
+            selected = [
+                project for project, var in self.selected_projects.items() if var.get()
+            ]
+            project_select_command(selected)
 
         for project in projects:
-            tk.Radiobutton(
+            var = tk.BooleanVar()
+            self.selected_projects[project] = var
+            tk.Checkbutton(
                 self,
                 text=project,
-                value=project,
-                variable=self.selected_project,
-                command=lambda p=project: project_select_command(p),
+                variable=var,
+                command=update_selected_projects,
             ).pack()
-
-        # Set the "all" projects button as the default selected button
-        self.selected_project.set("all")

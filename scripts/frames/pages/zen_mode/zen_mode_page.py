@@ -57,8 +57,8 @@ class ZenModePage(tk.Frame):
         self.task_detailed_steps = tk.Label(self, text="Steps: ...")
         self.task_detailed_steps.pack(padx=10, pady=10)
 
-    def load_next_task(self, project=None):
-        self.next_task: Task = self.task_retriever.get_next_task(project)
+    def load_next_task(self, projects: list[str] = []):
+        self.next_task: Task = self.task_retriever.get_next_task(projects)
         if self.next_task is None:
             self.task_description.config(text="No tasks left")
             self.project_name.config(text="")
