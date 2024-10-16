@@ -27,7 +27,10 @@ class MeditationPage(tk.Frame):
 
     def start_meditation(self, time_in_seconds: float):
         self.instructions.config(
-            text=f"close your eyes and breath. you are here and now"
+            text="""
+            stäng ögonen, andas, och fråga dig själv: hur känner jag? vad behöver jag just nu?
+            ge dig själv chansen att må bra i studen
+            """
         )
         self._start_timer(time_in_seconds)
         self._set_buttons_shown(False)
