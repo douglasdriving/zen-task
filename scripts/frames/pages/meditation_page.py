@@ -26,6 +26,8 @@ class MeditationPage(tk.Frame):
         self._create_return_button()
 
     def start_meditation(self, time_in_seconds: float):
+        if time_in_seconds < 10:
+            time_in_seconds = 10
         self.instructions.config(
             text="""
             stäng ögonen, andas, och fråga dig själv: hur känner jag? vad behöver jag just nu?
@@ -36,7 +38,7 @@ class MeditationPage(tk.Frame):
         self._set_buttons_shown(False)
 
     def _start_timer(self, time_in_seconds: float):
-        time_in_seconds = int(time_in_seconds)  # Convert to integer to avoid decimals
+        time_in_seconds = int(time_in_seconds)
         self.time_label.config(
             text=f"{time_in_seconds // 60:02}:{time_in_seconds % 60:02}"
         )

@@ -1,4 +1,5 @@
 import tkinter as tk
+import time
 from ....db.task_retriever import TaskRetriever
 from ....task.task import Task
 from ....db.task_checker import TaskChecker
@@ -16,8 +17,8 @@ class ZenModePage(tk.Frame):
     task_detailed_steps: tk.Label
     next_task: Task
     task_checker: TaskChecker
-    time_spent_on_current_task: int
     is_timer_running: bool
+    time_task_started: float
     project_select_button_row: ProjectSelectButtonRow
 
     end_task_button: tk.Button
@@ -78,17 +79,14 @@ class ZenModePage(tk.Frame):
             self._start_timer()
 
     def _start_timer(self):
-        def update_timer():
-            if self.is_timer_running:
-                self.time_spent_on_current_task += 1
-                self.after(1000, update_timer)
-
+        self.time_task_started = time.time()
         self.is_timer_running = True
-        self.time_spent_on_current_task = 0
-        self.after(1000, update_timer)
 
     def _end_task(self):
         self.is_timer_running = False
         self.task_checker.set_task_as_done(self.next_task.id)
         meditation_page: MeditationPage = self.controller.show_frame("MeditationPage")
-        meditation_page.start_meditation(float(self.time_spent_on_current_task) / 10)
+        time_spent_on_task = time.time() - self.time_task_started
+        time_to_mediate = float(time_spent_on_task) / 10
+        meditation_page.start_meditation(time_to_mediate)
+        self.time_task_started = None
