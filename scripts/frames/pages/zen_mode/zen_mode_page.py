@@ -31,8 +31,8 @@ class ZenModePage(tk.Frame):
         self._setup_page(controller)
 
     def on_show(self):
-        self.load_next_task()
         self.project_select_button_row.update_project_list()
+        self.load_next_task()
 
     def _setup_page(self, controller):
         self._add_return_button(controller)
@@ -62,7 +62,8 @@ class ZenModePage(tk.Frame):
         self.task_detailed_steps = tk.Label(self, text="Steps: ...")
         self.task_detailed_steps.pack(padx=10, pady=10)
 
-    def load_next_task(self, projects: list[str] = []):
+    def load_next_task(self):
+        projects = self.project_select_button_row.get_selected_projects()
         self.next_task: Task = self.task_retriever.get_next_task(projects)
         if self.next_task is None:
             self.task_description.config(text="No tasks left")
