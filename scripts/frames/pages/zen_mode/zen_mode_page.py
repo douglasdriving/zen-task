@@ -32,11 +32,15 @@ class ZenModePage(tk.Frame):
 
     def on_show(self):
         self.load_next_task()
+        self.project_select_button_row.update_project_list()
 
     def _setup_page(self, controller):
         self._add_return_button(controller)
         tk.Label(self, text="Zen Mode").pack(padx=10, pady=10)
-        ProjectSelectButtonRow(self, controller, self.load_next_task).pack()
+        self.project_select_button_row = ProjectSelectButtonRow(
+            self, controller, self.load_next_task
+        )
+        self.project_select_button_row.pack()
         self._add_task_info_fields()
         self.end_task_button = tk.Button(self, text="End Task", command=self._end_task)
         self.end_task_button.pack(padx=10, pady=10)
