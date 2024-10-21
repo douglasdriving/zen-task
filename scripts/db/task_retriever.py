@@ -30,8 +30,8 @@ class TaskRetriever:
             WHERE t.done = 0
             AND (t.waiting_for_date IS NULL OR t.waiting_for_date <= ?)
             AND t.project IN ({})
-            AND (dep.done IS NULL OR dep.done = 1)
             GROUP BY t.id
+            HAVING COUNT(CASE WHEN dep.done = 0 THEN 1 END) = 0
             """.format(
             placeholders
         )
