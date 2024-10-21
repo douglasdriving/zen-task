@@ -43,7 +43,7 @@ class TaskCreationPage(tk.Frame):
         self._add_bottom_message_label()
         self._clean_values()
 
-    def _focus_next_field(self):
+    def focus_next_field(self):
         print("Current focused field index:", self.currently_focused_field_id)
         self.currently_focused_field_id += 1
         if self.currently_focused_field_id >= len(self.focus_fields):
@@ -138,7 +138,7 @@ class TaskCreationPage(tk.Frame):
         calendar = DropDownCalendar(self, self.controller, label)
         calendar.pack()
         self.calendars[label] = calendar
-        self._add_focus_field(calendar)
+        focus_field_id = self._add_focus_field(calendar)
 
     def _add_labeled_slider(
         self, label: str, message: str, values: list, annotations: list
@@ -162,7 +162,7 @@ class TaskCreationPage(tk.Frame):
     def _add_focus_field(self, field: tk.Frame):
         self.focus_fields.append(field)
         focus_field_id = len(self.focus_fields) - 1
-        field.bind("<Tab>", lambda e: self._focus_next_field() or "break")
+        field.bind("<Tab>", lambda e: self.focus_next_field() or "break")
         return focus_field_id
 
     def _add_return_button(self):
