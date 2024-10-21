@@ -19,21 +19,19 @@ class DropDownCalendar(tk.Frame):
         self.is_open = tk.BooleanVar(value=False)
         self._add_checkbox(checkbox_label)
         self._add_calendar()
-        self.bind("<FocusIn>", self._on_focus)
-        self.bind("<FocusOut>", self._on_focus_out)
+        self.bind("<FocusIn>", lambda e: self._change_bg_color("yellow"))
+        self.bind("<FocusOut>", lambda e: self._change_bg_color("white"))
+        self._bind_keys()
 
-    def _on_focus(self, event):
-        print("CALENDAR IS FOCUSed")
-        self.checkbox.config(bg="yellow")
+    def _bind_keys(self):
         self.bind("<Return>", lambda e: self._toggle_checkbox_and_calendar())
         self.bind("<Left>", lambda e: self._shift_day(-1))
         self.bind("<Right>", lambda e: self._shift_day(1))
         self.bind("<Up>", lambda e: self._shift_day(-7))
         self.bind("<Down>", lambda e: self._shift_day(7))
 
-    def _on_focus_out(self, event):
-        print("CALENDAR IS NOT FOCUSed")
-        self.checkbox.config(bg="white")
+    def _change_bg_color(self, color: str):
+        self.checkbox.config(bg=color)
 
     def _shift_day(self, days_to_shift: int):
         selected_date = self.calendar.selection_get()

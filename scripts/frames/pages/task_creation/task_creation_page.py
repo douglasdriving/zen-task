@@ -45,14 +45,13 @@ class TaskCreationPage(tk.Frame):
 
     def focus_next_field(self):
         print("Current focused field index:", self.currently_focused_field_id)
+        self.focus_fields[self.currently_focused_field_id].config(bg="white")
         self.currently_focused_field_id += 1
         if self.currently_focused_field_id >= len(self.focus_fields):
             self.currently_focused_field_id = 0
-
         target_field = self.focus_fields[self.currently_focused_field_id]
         target_field.focus_set()
-
-        # Add a delay to ensure the UI updates before printing
+        target_field.config(bg="yellow")
         self.after(100, lambda: print("Switched focus field to:", target_field))
 
     def _focus_field(self, field_id: int):
@@ -88,6 +87,7 @@ class TaskCreationPage(tk.Frame):
             self, projects, self._on_project_change
         )
         dropdown_entry.pack()
+        self._add_focus_field(dropdown_entry)
 
     def _on_project_change(self, project: str):
         self.task_dependency_field.update_projects([project])
@@ -138,7 +138,7 @@ class TaskCreationPage(tk.Frame):
         calendar = DropDownCalendar(self, self.controller, label)
         calendar.pack()
         self.calendars[label] = calendar
-        focus_field_id = self._add_focus_field(calendar)
+        self._add_focus_field(calendar)
 
     def _add_labeled_slider(
         self, label: str, message: str, values: list, annotations: list
