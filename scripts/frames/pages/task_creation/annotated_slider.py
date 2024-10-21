@@ -41,3 +41,7 @@ class AnnotatedSlider(tk.Frame):
 
     def get_selected_value(self):
         return self.value_var.get()
+
+    def reset(self):
+        self.slider.set(self.values[0])
+        self._update_annotation_text(self.values[0])

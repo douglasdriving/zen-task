@@ -5,18 +5,21 @@ from ....db.task_db_adder import TaskDbAdder
 from .dropdown_calendar import DropDownCalendar
 from ....db.project_db_retriever import ProjectDbRetriever
 from .entry_with_dropdown import DropdownEntry
+from .dependencies_input_field import DependenciesInputField
 
 
 class TaskCreationPage(tk.Frame):
 
     parent: object
     controller: object
+
     text_fields: dict[str, tk.Text]
     sliders: dict[str, AnnotatedSlider]
     calendars: dict[str, DropDownCalendar]
     project_entry: DropdownEntry
     bottom_message: tk.Label
     time_estimate_field: tk.Entry
+    task_dependency_field: DependenciesInputField
     task_db_adder: TaskDbAdder
 
     def __init__(self, parent, controller):
@@ -26,9 +29,9 @@ class TaskCreationPage(tk.Frame):
         self.text_fields = {}
         self.sliders = {}
         self.calendars = {}
-        self._add_page_content()
+        self._setup_page()
 
-    def _add_page_content(self):
+    def _setup_page(self):
         self._add_return_button()
         tk.Label(self, text="Task Creation").pack(padx=10, pady=10)
         self._add_input_fields()
@@ -47,6 +50,7 @@ class TaskCreationPage(tk.Frame):
         self._add_calendar_field("deadline")
         self._add_calendar_field("waiting for date")
         self._add_project_field()
+        self._add_dependencies_field()
         self._add_value_slider()
         self._add_excitement_slider()
         self._add_time_estimate_field()
@@ -56,8 +60,13 @@ class TaskCreationPage(tk.Frame):
         tk.Label(self, text="Project").pack()
         project_retriever = ProjectDbRetriever()
         projects = project_retriever.get_all_projects()
-        self.project_entry = dropdown_entry = DropdownEntry(self, projects)
+        self.project_entry = dropdown_entry = DropdownEntry(
+            self, projects, self._on_project_change
+        )
         dropdown_entry.pack()
+
+    def _on_project_change(self, project: str):
+        self.task_dependency_field.update_projects([project])
 
     def _add_effort_slider(self):
         self._add_labeled_slider(
@@ -162,6 +171,7 @@ class TaskCreationPage(tk.Frame):
             deadline=self.calendars["deadline"].get_date(),
             project=self.project_entry.get_value().strip(),
             waiting_until=self.calendars["waiting for date"].get_date(),
+            dependencies=self.task_dependency_field.get_selected_tasks(),
         )
         task.rate(
             value=self.sliders["value"].get_selected_value(),
@@ -174,8 +184,14 @@ class TaskCreationPage(tk.Frame):
     def _clean_values(self):
         for entry in self.text_fields.values():
             entry.delete("1.0", tk.END)
+        for slider in self.sliders.values():
+            slider.reset()
         for calendar in self.calendars.values():
             calendar.reset()
+        self.project_entry.reset()
         self.time_estimate_field.delete(0, tk.END)
-        for selection in self.sliders.values():
-            selection.value_var.set(-1)
+        self.task_dependency_field.close_dropdown()
+
+    def _add_dependencies_field(self):
+        self.task_dependency_field = DependenciesInputField(self)
+        self.task_dependency_field.pack()

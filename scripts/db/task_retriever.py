@@ -8,14 +8,14 @@ class TaskRetriever:
         pass
 
     def get_next_task(self, projects: list[str] = []):
-        tasks = self._get_available_tasks(projects)
+        tasks = self.get_available_tasks(projects)
         if len(tasks) == 0:
             return None
         else:
             next_task = self._pick_best_task(tasks)
             return next_task
 
-    def _get_available_tasks(self, projects: list[str] = []):
+    def get_available_tasks(self, projects: list[str] = []):
         tasks_data = self._get_available_tasks_from_db(projects)
         tasks = self._make_tasks_from_data(tasks_data)
         return tasks

@@ -2,7 +2,8 @@ import tkinter as tk
 
 
 class DropdownEntry(tk.Frame):
-    def __init__(self, parent, options):
+
+    def __init__(self, parent, options, on_entry_change: callable = None):
         super().__init__(parent)
         self.options: list[str] = options
         self.entry_var = tk.StringVar()
@@ -20,6 +21,11 @@ class DropdownEntry(tk.Frame):
         for option in self.options:
             self.listbox.insert(tk.END, option)
 
+        if on_entry_change:
+            self.entry_var.trace_add(
+                "write", lambda *args: on_entry_change(self.entry_var.get())
+            )
+
     def show_listbox(self, event=None):
         self.listbox.pack()
 
@@ -34,3 +40,7 @@ class DropdownEntry(tk.Frame):
 
     def get_value(self):
         return self.entry_var.get()
+
+    def reset(self):
+        self.entry_var.set("")
+        self.listbox.pack_forget()

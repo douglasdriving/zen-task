@@ -11,6 +11,7 @@ class Task:
     deadline: datetime
     waiting_for_date: datetime
     project: str
+    dependencies: list["Task"]
 
     value: int
     excitement: int
@@ -25,6 +26,7 @@ class Task:
         project: str,
         deadline: datetime = None,
         waiting_until: datetime = None,
+        dependencies: list["Task"] = [],
     ):
         self.description = description
         self.definition_of_done = definition_of_done
@@ -32,6 +34,7 @@ class Task:
         self.deadline = deadline
         self.project = project
         self.waiting_for_date = waiting_until
+        self.dependencies = dependencies
 
     def rate(
         self,
