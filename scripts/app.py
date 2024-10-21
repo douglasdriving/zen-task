@@ -3,8 +3,9 @@ from tkinter import ttk
 from .frames.pages.main_menu import MainMenu
 from .frames.pages.task_creation.task_creation_page import TaskCreationPage
 from .frames.pages.zen_mode.zen_mode_page import ZenModePage
-from .frames.pages.meditation_page import MeditationPage
+from .frames.pages.zen_mode.meditation_page import MeditationPage
 from .frames.pages.startup_page import StartupPage
+from .frames.pages.zen_mode.task_preparation_page import TaskPreparationPage
 
 
 class App:
@@ -23,7 +24,14 @@ class App:
 
     def _add_frames(self):
         self.frames = {}
-        for F in (MainMenu, TaskCreationPage, ZenModePage, MeditationPage, StartupPage):
+        for F in (
+            MainMenu,
+            TaskCreationPage,
+            ZenModePage,
+            MeditationPage,
+            StartupPage,
+            TaskPreparationPage,
+        ):
             page_name = F.__name__
             frame = F(parent=self.scrollable_frame, controller=self)
             self.frames[page_name] = frame

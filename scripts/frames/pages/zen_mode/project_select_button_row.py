@@ -32,7 +32,6 @@ class ProjectSelectButtonRow(tk.Frame):
                     variable=var,
                     command=self.project_select_command,
                 ).pack()
-        print("Projects updated")
 
     def get_selected_projects(self):
         selected_projects = [

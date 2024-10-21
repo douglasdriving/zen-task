@@ -3,8 +3,7 @@ import time
 from ....db.task_retriever import TaskRetriever
 from ....task.task import Task
 from ....db.task_checker import TaskChecker
-from ..meditation_page import MeditationPage
-from .project_select_button_row import ProjectSelectButtonRow
+from .meditation_page import MeditationPage
 
 
 class ZenModePage(tk.Frame):
@@ -19,8 +18,6 @@ class ZenModePage(tk.Frame):
     task_checker: TaskChecker
     is_timer_running: bool
     time_task_started: float
-    project_select_button_row: ProjectSelectButtonRow
-
     end_task_button: tk.Button
 
     def __init__(self, parent, controller):
@@ -30,17 +27,9 @@ class ZenModePage(tk.Frame):
         self.task_checker = TaskChecker()
         self._setup_page(controller)
 
-    def on_show(self):
-        self.project_select_button_row.update_project_list()
-        self.load_next_task()
-
     def _setup_page(self, controller):
         self._add_return_button(controller)
         tk.Label(self, text="Zen Mode").pack(padx=10, pady=10)
-        self.project_select_button_row = ProjectSelectButtonRow(
-            self, controller, self.load_next_task
-        )
-        self.project_select_button_row.pack()
         self._add_task_info_fields()
         self.end_task_button = tk.Button(self, text="End Task", command=self._end_task)
         self.end_task_button.pack(padx=10, pady=10)
@@ -62,8 +51,7 @@ class ZenModePage(tk.Frame):
         self.task_detailed_steps = tk.Label(self, text="Steps: ...")
         self.task_detailed_steps.pack(padx=10, pady=10)
 
-    def load_next_task(self):
-        projects = self.project_select_button_row.get_selected_projects()
+    def load_next_task(self, projects: list[str]):
         self.next_task: Task = self.task_retriever.get_next_task(projects)
         if self.next_task is None:
             self.task_description.config(text="No tasks left")

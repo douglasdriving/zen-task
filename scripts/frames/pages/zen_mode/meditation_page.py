@@ -77,7 +77,7 @@ class MeditationPage(tk.Frame):
         self.next_task_button = tk.Button(
             self,
             text="Next Task ->",
-            command=lambda: self.controller.show_frame("ZenModePage"),
+            command=lambda: self.controller.show_frame("TaskPreparationPage"),
         )
 
     def _create_return_button(self):

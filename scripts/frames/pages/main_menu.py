@@ -1,6 +1,6 @@
 import tkinter as tk
 from .task_creation.task_creation_page import TaskCreationPage
-from .zen_mode.zen_mode_page import ZenModePage
+from .zen_mode.task_preparation_page import TaskPreparationPage
 
 
 class MainMenu(tk.Frame):
@@ -23,6 +23,6 @@ class MainMenu(tk.Frame):
         enter_zen_mode_button = tk.Button(
             self,
             text="Enter Zen Mode",
-            command=lambda: controller.show_frame(ZenModePage.__name__),
+            command=lambda: controller.show_frame(TaskPreparationPage.__name__),
         )
         enter_zen_mode_button.pack(padx=10, pady=10)
