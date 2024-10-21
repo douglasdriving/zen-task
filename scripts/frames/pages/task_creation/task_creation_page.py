@@ -22,6 +22,9 @@ class TaskCreationPage(tk.Frame):
     task_dependency_field: DependenciesInputField
     task_db_adder: TaskDbAdder
 
+    focus_fields: list[tk.Frame] = []
+    currently_focused_field_id: int = 0
+
     def __init__(self, parent, controller):
         self.task_db_adder = TaskDbAdder()
         tk.Frame.__init__(self, parent)
@@ -29,6 +32,7 @@ class TaskCreationPage(tk.Frame):
         self.text_fields = {}
         self.sliders = {}
         self.calendars = {}
+        self.focus_fields = []
         self._setup_page()
 
     def _setup_page(self):
@@ -39,12 +43,32 @@ class TaskCreationPage(tk.Frame):
         self._add_bottom_message_label()
         self._clean_values()
 
+    def _focus_next_field(self):
+        print("Current focused field index:", self.currently_focused_field_id)
+        self.currently_focused_field_id += 1
+        if self.currently_focused_field_id >= len(self.focus_fields):
+            self.currently_focused_field_id = 0
+
+        target_field = self.focus_fields[self.currently_focused_field_id]
+        target_field.focus_set()
+
+        # Add a delay to ensure the UI updates before printing
+        self.after(100, lambda: print("Switched focus field to:", target_field))
+
+    def _focus_field(self, field_id: int):
+        self.currently_focused_field_id = field_id
+        self.focus_fields[field_id].focus_set()
+
     def _add_bottom_message_label(self):
         self.bottom_message = tk.Label(self, text="")
         self.bottom_message.pack(padx=10, pady=10)
 
     def _add_input_fields(self):
-        self._add_labeled_text_field("description", "Description", 2)
+        description_field = self._add_labeled_text_field(
+            "description", "Description", 2
+        )
+        description_field.focus_set()
+        self.currently_focused_field_id = 0
         self._add_labeled_text_field("dod", "Definition of done", 2)
         self._add_labeled_text_field("steps", "Detailed steps", 5)
         self._add_calendar_field("deadline")
@@ -114,6 +138,7 @@ class TaskCreationPage(tk.Frame):
         calendar = DropDownCalendar(self, self.controller, label)
         calendar.pack()
         self.calendars[label] = calendar
+        self._add_focus_field(calendar)
 
     def _add_labeled_slider(
         self, label: str, message: str, values: list, annotations: list
@@ -130,6 +155,15 @@ class TaskCreationPage(tk.Frame):
         entryField = tk.Text(self, width=50, height=height)
         entryField.pack(padx=10)
         self.text_fields[label] = entryField
+        focus_field_id = self._add_focus_field(entryField)
+        entryField.bind("<FocusIn>", lambda e: self._focus_field(focus_field_id))
+        return entryField
+
+    def _add_focus_field(self, field: tk.Frame):
+        self.focus_fields.append(field)
+        focus_field_id = len(self.focus_fields) - 1
+        field.bind("<Tab>", lambda e: self._focus_next_field() or "break")
+        return focus_field_id
 
     def _add_return_button(self):
         tk.Button(
@@ -148,7 +182,6 @@ class TaskCreationPage(tk.Frame):
                 return False
 
         vcmd = (self.register(validate_positive_integer), "%P")
-
         frame = tk.Frame(self)
         frame.pack(padx=10, pady=10)
         tk.Label(frame, text="Estimated time in minutes").pack(side=tk.LEFT, padx=10)
