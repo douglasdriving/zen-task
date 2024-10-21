@@ -23,11 +23,16 @@ class TaskRetriever:
     def _get_available_tasks_from_db(self, projects: list[str] = []):
         placeholders = ", ".join(["?" for _ in projects])
         query = """
-        SELECT * FROM tasks
-        WHERE done = 0
-        AND (waiting_for_date IS NULL OR waiting_for_date <= ?)
-        AND project IN ({})
-        """.format(
+            SELECT t.*
+            FROM tasks t
+            LEFT JOIN task_dependencies td ON t.id = td.task_id
+            LEFT JOIN tasks dep ON td.dependency_task_id = dep.id
+            WHERE t.done = 0
+            AND (t.waiting_for_date IS NULL OR t.waiting_for_date <= ?)
+            AND t.project IN ({})
+            AND (dep.done IS NULL OR dep.done = 1)
+            GROUP BY t.id
+            """.format(
             placeholders
         )
         params = [datetime.now().timestamp()] + projects
