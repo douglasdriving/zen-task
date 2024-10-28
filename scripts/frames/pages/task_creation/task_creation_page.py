@@ -21,6 +21,7 @@ class TaskCreationPage(tk.Frame):
     time_estimate_field: tk.Entry
     task_dependency_field: DependenciesInputField
     task_db_adder: TaskDbAdder
+    add_task_button: tk.Button
 
     focus_fields: list[tk.Frame] = []
     currently_focused_field_id: int = 0
@@ -39,9 +40,15 @@ class TaskCreationPage(tk.Frame):
         self._add_return_button()
         tk.Label(self, text="Task Creation").pack(padx=10, pady=10)
         self._add_input_fields()
-        tk.Button(self, text="Add", command=self._add_task).pack(padx=10, pady=10)
+        self._add_add_button()
         self._add_bottom_message_label()
         self._clean_values()
+
+    def _add_add_button(self):
+        self.add_task_button = tk.Button(self, text="Add", command=self._add_task)
+        self.add_task_button.pack(padx=10, pady=10)
+        self._add_focus_field(self.add_task_button)
+        self.add_task_button.bind("<Return>", lambda e: self._add_task())
 
     def focus_next_field(self):
         self.focus_fields[self.currently_focused_field_id].config(bg="white")
