@@ -187,6 +187,7 @@ class TaskCreationPage(tk.Frame):
         entry = tk.Entry(frame, validate="key", validatecommand=vcmd)
         entry.pack(side=tk.LEFT, padx=10)
         self.time_estimate_field = entry
+        self._add_focus_field(entry)
 
     def _add_task(self):
         task = self._create_task_from_user_input()
