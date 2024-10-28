@@ -44,7 +44,6 @@ class TaskCreationPage(tk.Frame):
         self._clean_values()
 
     def focus_next_field(self):
-        print("Current focused field index:", self.currently_focused_field_id)
         self.focus_fields[self.currently_focused_field_id].config(bg="white")
         self.currently_focused_field_id += 1
         if self.currently_focused_field_id >= len(self.focus_fields):
@@ -52,7 +51,6 @@ class TaskCreationPage(tk.Frame):
         target_field = self.focus_fields[self.currently_focused_field_id]
         target_field.focus_set()
         target_field.config(bg="yellow")
-        self.after(100, lambda: print("Switched focus field to:", target_field))
 
     def _focus_field(self, field_id: int):
         self.currently_focused_field_id = field_id
@@ -228,3 +226,4 @@ class TaskCreationPage(tk.Frame):
     def _add_dependencies_field(self):
         self.task_dependency_field = DependenciesInputField(self)
         self.task_dependency_field.pack()
+        self._add_focus_field(self.task_dependency_field)
