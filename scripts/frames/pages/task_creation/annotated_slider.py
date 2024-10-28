@@ -53,21 +53,18 @@ class AnnotatedSlider(tk.Frame):
         self._add_arrow_controls()
 
     def _add_arrow_controls(self):
-        self.bind("<Left>", self._move_left)
-        self.bind("<Right>", self._move_right)
+        self.bind("<Left>", lambda e: self._move_slider(-1))
+        self.bind("<Right>", lambda e: self._move_slider(1))
 
     def _set_background(self, color):
         self.annotation.config(bg=color)
 
-    def _move_left(self, event):
+    def _move_slider(self, value: int = 1):
         current_value = self.value_var.get()
-        if current_value > self.values[0]:
-            self.value_var.set(current_value - 1)
-
-    def _move_right(self, event):
-        current_value = self.value_var.get()
-        if current_value < self.values[-1]:
-            self.value_var.set(current_value + 1)
+        new_value = current_value + value
+        if new_value in self.values:
+            self.value_var.set(new_value)
+            self._update_annotation_text(new_value)
 
     def _on_focus_out(self):
         self._set_background("white")
