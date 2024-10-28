@@ -147,6 +147,7 @@ class TaskCreationPage(tk.Frame):
         slider = AnnotatedSlider(self, self.controller, values, annotations)
         self.sliders[label] = slider
         slider.pack(padx=10)
+        self._add_focus_field(slider)
 
     def _add_labeled_text_field(self, label: str, message: str, height=3):
         tk.Label(self, text=message).pack(padx=10)
