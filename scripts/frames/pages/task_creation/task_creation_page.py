@@ -103,39 +103,39 @@ class TaskCreationPage(tk.Frame):
             "How much effort do you think this task will require?",
             [1, 2, 3, 4, 5],
             [
-                "trivial, i know exactly what to do",
-                "easy, i know what to do",
-                "medium, it will require a bit of thinking",
-                "hard, i will need to focus",
-                "very hard, i will need a lot of mental energy",
+                "Trivial, i know exactly what to do",
+                "Easy, i know what to do",
+                "Medium, it will require a bit of thinking",
+                "Quite hard, I will need to concentrate",
+                "Hard, it requires full focus",
             ],
         )
 
     def _add_excitement_slider(self):
         self._add_labeled_slider(
             "excitement",
-            "How excited are you about working on this?",
+            "How much would you enjoy working on this?",
             [1, 2, 3, 4, 5],
             [
-                "i really dont want to work on this",
-                "not very excited",
-                "this is ok",
-                "this is exciting",
-                "i cant wait to work on this",
+                "I wouldnt really enjoy it",
+                "It would be ok",
+                "I would might enjoy it a little bit",
+                "I would probably enjoy it",
+                "I would definitely enjoy it",
             ],
         )
 
     def _add_value_slider(self):
         self._add_labeled_slider(
             "value",
-            "How much better would your life be if you completed this task?",
+            "How important is this in your life?",
             [1, 2, 3, 4, 5],
             [
-                "it would not change",
-                "it would be a little bit better",
-                "it would improve",
-                "it would improve a lot",
-                "it would be a game changer",
+                "Not that important",
+                "A little bit important",
+                "Quite important",
+                "Definitely important",
+                "Very important",
             ],
         )
 
