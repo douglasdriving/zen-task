@@ -69,13 +69,11 @@ class Task:
         print("Cognitive load: ", self.cognitive_load)
 
     def calculate_score(self):
-        # TODO: and make sure the slider value is taken into account on task scoring
-        # TODO: finally, change the current db entries to use this system
         value_multiplier = self.value
         excitement_multiplier = self.excitement
-        time_multiplier = self.time_complexity
+        time_multiplier = 1 / self.time_complexity
         effort_multiplier = self.cognitive_load
-        if datetime.now().hour > 13:  # in the afternoon, focus on lighter tasks
+        if datetime.now().hour > 13:
             effort_multiplier = 1 / self.cognitive_load
         score = (
             value_multiplier
