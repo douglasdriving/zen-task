@@ -43,7 +43,7 @@ class TaskDbAdder:
         task.id = task_id
         self.add_task_dependencies(task)
 
-    def _add_task(self, task):
+    def _add_task(self, task: Task):
         self.cursor.execute(
             """
             INSERT INTO tasks (
@@ -69,7 +69,7 @@ class TaskDbAdder:
                 task.project,
                 task.value,
                 task.excitement,
-                task.estimated_time_in_minutes,
+                task.time_complexity,
                 task.cognitive_load,
             ),
         )

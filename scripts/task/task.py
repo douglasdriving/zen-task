@@ -15,7 +15,7 @@ class Task:
 
     value: int
     excitement: int
-    estimated_time_in_minutes: int
+    time_complexity: int
     cognitive_load: int
 
     def __init__(
@@ -40,12 +40,12 @@ class Task:
         self,
         value: int,
         excitement: int,
-        estimated_time_in_minutes: int,
+        time_complexity: int,
         cognitive_load: int,
     ):
         self.value = value
         self.excitement = excitement
-        self.estimated_time_in_minutes = estimated_time_in_minutes
+        self.time_complexity = time_complexity
         self.cognitive_load = cognitive_load
 
     def print_details_and_ratings(self):
@@ -65,14 +65,16 @@ class Task:
     def print_ratings(self):
         print("Value: ", self.value)
         print("Excitement: ", self.excitement)
-        print("Estimated time in minutes: ", self.estimated_time_in_minutes)
+        print("Estimated time in minutes: ", self.time_complexity)
         print("Cognitive load: ", self.cognitive_load)
 
     def calculate_score(self):
+        # TODO: and make sure the slider value is taken into account on task scoring
+        # TODO: finally, change the current db entries to use this system
         value_multiplier = self.value
         excitement_multiplier = self.excitement
-        time_multiplier = 1 / self.estimated_time_in_minutes
-        effort_multiplier = 1 / self.cognitive_load
+        time_multiplier = self.time_complexity
+        effort_multiplier = self.cognitive_load
         if datetime.now().hour > 13:  # in the afternoon, focus on lighter tasks
             effort_multiplier = 1 / self.cognitive_load
         score = (

@@ -72,7 +72,7 @@ class TaskRetriever:
         task.rate(
             value=task_data[6],
             excitement=task_data[7],
-            estimated_time_in_minutes=task_data[8],
+            time_complexity=task_data[8],
             cognitive_load=task_data[9],
         )
         task.id = task_data[0]

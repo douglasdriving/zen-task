@@ -18,7 +18,6 @@ class TaskCreationPage(tk.Frame):
     calendars: dict[str, DropDownCalendar]
     project_entry: DropdownEntry
     bottom_message: tk.Label
-    time_estimate_field: tk.Entry
     task_dependency_field: DependenciesInputField
     task_db_adder: TaskDbAdder
     add_task_button: tk.Button
@@ -179,22 +178,18 @@ class TaskCreationPage(tk.Frame):
         ).pack(padx=10, pady=10)
 
     def _add_time_estimate_field(self):
-        def validate_positive_integer(value_if_allowed):
-            if value_if_allowed.isdigit() and int(value_if_allowed) > 0:
-                return True
-            elif value_if_allowed == "":
-                return True
-            else:
-                return False
-
-        vcmd = (self.register(validate_positive_integer), "%P")
-        frame = tk.Frame(self)
-        frame.pack(padx=10, pady=10)
-        tk.Label(frame, text="Estimated time in minutes").pack(side=tk.LEFT, padx=10)
-        entry = tk.Entry(frame, validate="key", validatecommand=vcmd)
-        entry.pack(side=tk.LEFT, padx=10)
-        self.time_estimate_field = entry
-        self._add_focus_field(entry)
+        self._add_labeled_slider(
+            "time",
+            "How much time do you think this task will require?",
+            [1, 2, 3, 4, 5],
+            [
+                "Less than 15 min",
+                "15 - 30 min",
+                "30 min - 1 hour",
+                "1 - 2 hours",
+                "More than 2 hours",
+            ],
+        )
 
     def _add_task(self):
         task = self._create_task_from_user_input()
@@ -216,7 +211,7 @@ class TaskCreationPage(tk.Frame):
         task.rate(
             value=self.sliders["value"].get_selected_value(),
             excitement=self.sliders["excitement"].get_selected_value(),
-            estimated_time_in_minutes=self.time_estimate_field.get(),
+            time_complexity=self.sliders["time"].get_selected_value(),
             cognitive_load=self.sliders["effort"].get_selected_value(),
         )
         return task
@@ -229,7 +224,6 @@ class TaskCreationPage(tk.Frame):
         for calendar in self.calendars.values():
             calendar.reset()
         self.project_entry.reset()
-        self.time_estimate_field.delete(0, tk.END)
         self.task_dependency_field.close_dropdown()
 
     def _add_dependencies_field(self):
