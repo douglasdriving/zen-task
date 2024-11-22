@@ -79,23 +79,10 @@ class TaskRetriever:
         return task
 
     def _pick_best_task(self, tasks: list[Task]):
-        next_task: Task = tasks[0]
-        for task in tasks:
-            next_task = self._pick_best_of_two_tasks(task, next_task)
-        return next_task
-
-    def _pick_best_of_two_tasks(self, task_1: Task, task_2: Task):
-        deadline_status_is_same = (
-            task_1.is_deadline_today_or_earlier()
-            == task_2.is_deadline_today_or_earlier()
+        sorted_tasks = sorted(
+            tasks, key=lambda task: task.calculate_score(), reverse=True
         )
-        if deadline_status_is_same:
-            if task_1.calculate_score() > task_2.calculate_score():
-                return task_1
-            else:
-                return task_2
-        else:
-            if task_1.is_deadline_today_or_earlier():
-                return task_1
-            else:
-                return task_2
+        ("picking the best task out of ", len(sorted_tasks), " tasks. list:")
+        for task in sorted_tasks:
+            print(task.calculate_score(), " - ", task.description)
+        return sorted_tasks[0]

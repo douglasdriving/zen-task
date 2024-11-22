@@ -69,18 +69,13 @@ class Task:
         print("Cognitive load: ", self.cognitive_load)
 
     def calculate_score(self):
-        value_multiplier = self.value
-        excitement_multiplier = self.excitement
-        time_multiplier = 1 / self.time_complexity
-        effort_multiplier = self.cognitive_load
+        value_term = self.value
+        excitement_term = self.excitement
+        time_term = -self.time_complexity
+        effort_term = self.cognitive_load / 2.5
         if datetime.now().hour > 13:
-            effort_multiplier = 1 / self.cognitive_load
-        score = (
-            value_multiplier
-            * excitement_multiplier
-            * time_multiplier
-            * effort_multiplier
-        )
+            effort_term = -effort_term
+        score = value_term + excitement_term + time_term + effort_term
         return score
 
     def get_deadline_as_int_or_none(self):
