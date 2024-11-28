@@ -78,6 +78,11 @@ class Task:
         score = value_term + excitement_term + time_term + effort_term
         return score
 
+    def has_low_score(self):
+        low_score = 3
+        score = self.calculate_score()
+        return score < low_score
+
     def get_deadline_as_int_or_none(self):
         return self._get_date_as_int_or_none(self.deadline)
 
