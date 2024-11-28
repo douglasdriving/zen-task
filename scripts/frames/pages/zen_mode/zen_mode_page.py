@@ -15,6 +15,7 @@ class ZenModePage(tk.Frame):
     time_task_started: float
     task_retriever = TaskRetriever()
     task_displayer: TaskDisplayer = None
+    next_task: Task = None
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -26,9 +27,10 @@ class ZenModePage(tk.Frame):
         ).pack(padx=10, pady=10)
 
     def load_next_task(self, projects: list[str]):
+        self._clear_task()
         self.next_task: Task = self.task_retriever.get_next_task(projects)
         if self.next_task is None:
-            self._show_no_task_left_message()
+            tk.Label(self, text="No tasks left!").pack(padx=10, pady=10)
         elif self.next_task.has_low_score():
             self._ask_about_low_score_task()
         else:
@@ -46,7 +48,6 @@ class ZenModePage(tk.Frame):
             low_score_task_confirmer.destroy()
             self._on_task_end()
 
-        self.clear_task()
         low_score_task_confirmer = LowScoreTaskConfirmer(
             self,
             self.controller,
@@ -56,25 +57,18 @@ class ZenModePage(tk.Frame):
         )
         low_score_task_confirmer.pack(padx=10, pady=10)
 
-    def clear_task(self):
+    def _clear_task(self):
         if hasattr(self, "task_displayer") and self.task_displayer:
             self.task_displayer.destroy()
 
     def _start_task(self):
         self.task_displayer = TaskDisplayer(self, self.next_task, self._on_task_end)
         self.task_displayer.pack(padx=10, pady=10)
-        self._start_timer()
-
-    def _show_no_task_left_message(self):
-        self.clear_task()
-        tk.Label(self, text="No tasks left!").pack(padx=10, pady=10)
-
-    def _start_timer(self):
         self.time_task_started = time.time()
         self.is_timer_running = True
 
     def _on_task_end(self):
-        self.clear_task()
+        self._clear_task()
         self.is_timer_running = False
         meditation_page: MeditationPage = self.controller.show_frame("MeditationPage")
         time_spent_on_task = time.time() - self.time_task_started
