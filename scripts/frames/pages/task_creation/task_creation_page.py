@@ -4,6 +4,7 @@ from ....task.task import Task
 from ....db.task_db_adder import TaskDbAdder
 from .dropdown_calendar import DropDownCalendar
 from ....db.project_db_retriever import ProjectDbRetriever
+from ....db.task_retriever import TaskRetriever
 from .entry_with_dropdown import DropdownEntry
 from .dependencies_input_field import DependenciesInputField
 
@@ -21,6 +22,7 @@ class TaskCreationPage(tk.Frame):
     task_dependency_field: DependenciesInputField
     task_db_adder: TaskDbAdder
     add_task_button: tk.Button
+    task_retriever = TaskRetriever()
 
     focus_fields: list[tk.Frame] = []
     currently_focused_field_id: int = 0
@@ -125,16 +127,21 @@ class TaskCreationPage(tk.Frame):
         )
 
     def _add_value_slider(self):
+        example_tasks = []
+        for i in range(1, 6):
+            task = self.task_retriever.get_example_task_by_value(i)
+            example_tasks.append(task.description)
+
         self._add_labeled_slider(
             "value",
             "How important is this in your life?",
             [1, 2, 3, 4, 5],
             [
-                "Not that important",
-                "A little bit important",
-                "Quite important",
-                "Definitely important",
-                "Very important",
+                f"Not that important (example: {example_tasks[0]})",
+                f"A little bit important (example: {example_tasks[1]})",
+                f"Quite important (example: {example_tasks[2]})",
+                f"Definitely important (example: {example_tasks[3]})",
+                f"Very important (example: {example_tasks[4]})",
             ],
         )
 

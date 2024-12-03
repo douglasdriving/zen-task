@@ -86,3 +86,16 @@ class TaskRetriever:
         for task in sorted_tasks:
             print(task.calculate_score(), " - ", task.description)
         return sorted_tasks[0]
+
+    def get_example_task_by_value(self, value: int):
+        query = """
+        SELECT *
+        FROM tasks
+        WHERE value = ?
+        AND done = 0
+        LIMIT 1
+        """
+        params = [value]
+        results = self._execute_query("tasks.db", query, params)
+        task = self._make_task_from_data(results[0])
+        return task
