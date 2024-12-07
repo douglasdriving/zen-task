@@ -23,15 +23,16 @@ class ProjectSelectButtonRow(tk.Frame):
         existing_projects = set(self.selected_projects.keys())
 
         for project in projects:
-            if project not in existing_projects:
-                var = tk.BooleanVar()
+            if project and project not in existing_projects:
+                var = tk.BooleanVar(value=True)
                 self.selected_projects[project] = var
                 tk.Checkbutton(
                     self,
-                    text=project,
+                    text=project.capitalize(),
                     variable=var,
                     command=self.project_select_command,
-                ).pack()
+                    anchor="w",
+                ).pack(anchor="w")
 
     def get_selected_projects(self):
         selected_projects = [

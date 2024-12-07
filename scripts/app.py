@@ -40,6 +40,7 @@ class App:
     def _create_window(self):
         self.window = tk.Tk()
         self.window.title("ZenTask")
+        self.window.state("zoomed")
 
     def _create_scrollable_canvas(self):
         # Create a canvas and a vertical scrollbar
