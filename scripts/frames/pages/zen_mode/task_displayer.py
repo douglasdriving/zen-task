@@ -22,18 +22,50 @@ class TaskDisplayer(tk.Frame):
         self._setup_frame()
 
     def _setup_frame(self):
-        task_description = tk.Label(self, text="Task: " + self.task.description)
-        project = tk.Label(self, text="Project: " + self.task.project)
-        definition_of_done = tk.Label(
-            self, text="Definition of done: " + self.task.definition_of_done
+        self._setup_project_label()
+        self._setup_task_description()
+        self._setup_definition_of_done()
+        self._setup_steps_label()
+        self._setup_steps_textbox()
+        self._setup_end_task_button()
+
+    def _setup_project_label(self):
+        self.project = tk.Label(self, text=self.task.project, bg="pink", padx=5, pady=5)
+        self.project.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+    def _setup_task_description(self):
+        task_text = self.task.description
+        self.task_description = tk.Label(
+            self, text=task_text, font=("Helvetica", 10, "bold")
         )
-        steps = tk.Label(self, text="Steps: " + self.task.detailed_steps)
-        end_task = tk.Button(self, text="End Task", command=self._end_task)
-        task_description.pack(padx=10, pady=10)
-        project.pack(padx=10, pady=10)
-        definition_of_done.pack(padx=10, pady=10)
-        steps.pack(padx=10, pady=10)
-        end_task.pack(padx=10, pady=10)
+        self.task_description.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+    def _setup_definition_of_done(self):
+        definition_of_done = tk.Label(
+            self, text=("D.O.D: " + self.task.definition_of_done)
+        )
+        definition_of_done.grid(
+            row=2, column=0, columnspan=2, padx=10, pady=10, sticky="w"
+        )
+
+    def _setup_steps_label(self):
+        steps_label = tk.Label(self, text="Break down:", anchor="w")
+        steps_label.grid(row=3, column=0, columnspan=2, padx=10, pady=5, sticky="w")
+
+    def _setup_steps_textbox(self):
+        self.steps_textbox = tk.Text(self, height=10, width=50, padx=5, pady=5)
+        self.steps_textbox.grid(row=4, column=0, columnspan=2, padx=10, sticky="w")
+
+    def _setup_end_task_button(self):
+        end_task = tk.Button(
+            self,
+            text="End Task",
+            command=self._end_task,
+            bg="green",
+            fg="white",
+            font=("Helvetica", 12, "bold"),
+        )
+        end_task.grid(row=5, column=1, columnspan=2, padx=10, pady=10, sticky="e")
 
     def _end_task(self):
         self.task_checker.set_task_as_done(self.task.id)

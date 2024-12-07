@@ -21,11 +21,16 @@ class ZenModePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        tk.Button(
+        self._add_back_button(controller)
+
+    def _add_back_button(self, controller):
+        back_button = tk.Button(
             self,
-            text="<- Back",
+            text="← Back",
             command=lambda: controller.show_frame("MainMenu"),
-        ).pack(padx=10, pady=10)
+            bg="light yellow",
+        )
+        back_button.pack(anchor="nw", padx=10, pady=10)
 
     def load_next_task(self, projects: list[str]):
         self._clear_task()
@@ -66,7 +71,7 @@ class ZenModePage(tk.Frame):
 
     def _start_task(self):
         self.task_displayer = TaskDisplayer(self, self.next_task, self._on_task_end)
-        self.task_displayer.pack(padx=10, pady=10)
+        self.task_displayer.pack()
         self.time_task_started = time.time()
         self.is_timer_running = True
 
