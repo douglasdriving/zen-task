@@ -5,6 +5,7 @@ from ....task.task import Task
 from .task_displayer import TaskDisplayer
 from .meditation_page import MeditationPage
 from .low_score_task_confirmer import LowScoreTaskConfirmer
+from ....db.task_deleter import TaskDeleter
 
 
 class ZenModePage(tk.Frame):
@@ -46,7 +47,9 @@ class ZenModePage(tk.Frame):
 
         def on_delete():
             low_score_task_confirmer.destroy()
-            self._on_task_end()
+            task_deleter = TaskDeleter(self.next_task.id)
+            task_deleter.delete_task()
+            self.controller.show_frame("TaskPreparationPage")
 
         low_score_task_confirmer = LowScoreTaskConfirmer(
             self,

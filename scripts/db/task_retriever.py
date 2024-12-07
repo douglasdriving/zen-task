@@ -84,5 +84,5 @@ class TaskRetriever:
         )
         ("picking the best task out of ", len(sorted_tasks), " tasks. list:")
         for task in sorted_tasks:
-            print(task.calculate_score(), " - ", task.description)
+            print(f"{task.calculate_score():.2f} - {task.description}")
         return sorted_tasks[0]
