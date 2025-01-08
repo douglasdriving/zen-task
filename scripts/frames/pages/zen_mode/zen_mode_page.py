@@ -3,7 +3,7 @@ import time
 from ....db.task_retriever import TaskRetriever
 from ....task.task import Task
 from .task_displayer import TaskDisplayer
-from .meditation_page import MeditationPage
+from .pause_page import PausePage
 from .low_score_task_confirmer import LowScoreTaskConfirmer
 from ....db.task_deleter import TaskDeleter
 
@@ -78,8 +78,8 @@ class ZenModePage(tk.Frame):
     def _on_task_end(self):
         self._clear_task()
         self.is_timer_running = False
-        meditation_page: MeditationPage = self.controller.show_frame("MeditationPage")
+        meditation_page: PausePage = self.controller.show_frame("MeditationPage")
         time_spent_on_task = time.time() - self.time_task_started
         time_to_mediate = float(time_spent_on_task) / 10
-        meditation_page.start_meditation(time_to_mediate)
+        meditation_page.begin_break(time_to_mediate)
         self.time_task_started = None

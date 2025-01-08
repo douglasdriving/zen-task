@@ -3,7 +3,7 @@ from tkinter import ttk
 from .frames.pages.main_menu import MainMenu
 from .frames.pages.task_creation.task_creation_page import TaskCreationPage
 from .frames.pages.zen_mode.zen_mode_page import ZenModePage
-from .frames.pages.zen_mode.meditation_page import MeditationPage
+from .frames.pages.zen_mode.meditation_page import PausePage
 from .frames.pages.startup_page import StartupPage
 from .frames.pages.zen_mode.task_preparation_page import TaskPreparationPage
 
@@ -28,7 +28,7 @@ class App:
             MainMenu,
             TaskCreationPage,
             ZenModePage,
-            MeditationPage,
+            PausePage,
             StartupPage,
             TaskPreparationPage,
         ):

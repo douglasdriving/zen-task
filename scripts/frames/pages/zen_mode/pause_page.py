@@ -1,8 +1,9 @@
 import tkinter as tk
 import winsound
+import random
 
 
-class MeditationPage(tk.Frame):
+class PausePage(tk.Frame):
 
     parent: tk.Frame
     controller: object
@@ -10,6 +11,24 @@ class MeditationPage(tk.Frame):
     time_label: tk.Label
     next_task_button: tk.Button
     return_button: tk.Button
+    break_prompts = [
+        "close your eyes and take 3 deep breaths",
+        "focus far into the distance for 20 seconds",
+        "stretch your arms and shoulders",
+        "relax all muscles in your body",
+        "stretch your neck",
+        "drink some water",
+        "arch and round your back (cat-cow stretch) 3 times while seated",
+        "roll your wrists and ankles",
+        "shake your hands and legs",
+        "imagine a peaceful place, be there for a moment",
+        "close your eyes and massage your temples",
+        "write down a positive thing about your day",
+        "do a 1 minute mindfullness meditation",
+        "stand up and walk around a few steps",
+        "doodle something on a piece of paper",
+        "write down 1 thing that you are feeling right now",
+    ]
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -25,17 +44,16 @@ class MeditationPage(tk.Frame):
         self._create_next_task_button()
         self._create_return_button()
 
-    def start_meditation(self, time_in_seconds: float):
+    def begin_pause(self, time_in_seconds: float):
         if time_in_seconds < 10:
             time_in_seconds = 10
-        self.instructions.config(
-            text="""
-            stäng ögonen, andas, och fråga dig själv: hur känner jag? vad behöver jag just nu?
-            ge dig själv chansen att må bra i studen
-            """
-        )
+        self._show_random_break_prompt()
         self._start_timer(time_in_seconds)
         self._set_buttons_shown(False)
+
+    def _show_random_break_prompt(self):
+        prompt = random.choice(self.break_prompts)
+        self.instructions.config(text=prompt)
 
     def _start_timer(self, time_in_seconds: float):
         time_in_seconds = int(time_in_seconds)
@@ -51,11 +69,11 @@ class MeditationPage(tk.Frame):
                 time_in_seconds -= 1
                 self.after(1000, update_timer)
             else:
-                self._on_meditation_complete()
+                self._on_pause_complete()
 
         update_timer()
 
-    def _on_meditation_complete(self):
+    def _on_pause_complete(self):
         self._play_sound()
         self.instructions.config(text="thank you for slowing down")
         self._set_buttons_shown(True)
