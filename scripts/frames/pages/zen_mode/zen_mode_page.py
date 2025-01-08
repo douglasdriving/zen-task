@@ -78,7 +78,7 @@ class ZenModePage(tk.Frame):
     def _on_task_end(self):
         self._clear_task()
         self.is_timer_running = False
-        meditation_page: PausePage = self.controller.show_frame("MeditationPage")
+        meditation_page: PausePage = self.controller.show_frame("PausePage")
         time_spent_on_task = time.time() - self.time_task_started
         time_to_mediate = float(time_spent_on_task) / 10
         meditation_page.begin_pause(time_to_mediate)
